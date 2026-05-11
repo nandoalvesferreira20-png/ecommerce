@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Cadastro - Fut Store</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/cadastro.css">
+
+    <!-- ICONS -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+    <div class="bg-effect"></div>
+
+    <!-- NAVBAR -->
+    <header>
+
+        <nav class="navbar">
+
+            <h2 class="logo">Fut Store</h2>
+
+            <ul class="menu">
+
+                <li>
+                    <a href="index.html">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="produtos.html">
+                        Produtos
+                    </a>
+                </li>
+
+                <li>
+                    <a href="login.html">
+                        Login
+                    </a>
+                </li>
+
+                <li>
+                    <a href="carrinho.html">
+                        Carrinho
+                    </a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </header>
+
+    <!-- MAIN -->
+    <main>
+
+        <!-- LEFT -->
+        <section class="banner-area">
+
+            <div class="banner-content">
+
+                <span class="badge">
+                    Crie sua conta
+                </span>
+
+                <h1>
+                    Entre para a Fut Store
+                </h1>
+
+                <p>
+                    Tenha acesso aos melhores produtos,
+                    promoções exclusivas e experiência premium.
+                </p>
+
+            </div>
+
+        </section>
+
+        <!-- FORM -->
+        <section class="form-area">
+
+            <form
+              class="register-form"
+              id="formCadastro"
+            >
+
+                <h1>Cadastrar</h1>
+
+                <p class="subtitle">
+                    Crie sua conta gratuitamente
+                </p>
+
+                <!-- NOME -->
+                <div class="input-group">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    <input
+                      type="text"
+                      id="nome"
+                      required
+                    >
+
+                    <label>
+                        Nome completo
+                    </label>
+
+                </div>
+
+                <!-- EMAIL -->
+                <div class="input-group">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                    <input
+                      type="email"
+                      id="email"
+                      required
+                    >
+
+                    <label>
+                        Email
+                    </label>
+
+                </div>
+
+                <!-- TELEFONE -->
+                <div class="input-group">
+
+                    <i class="fa-solid fa-phone"></i>
+
+                    <input
+                      type="tel"
+                      id="telefone"
+                      required
+                    >
+
+                    <label>
+                        Telefone
+                    </label>
+
+                </div>
+
+                <!-- SENHA -->
+                <div class="input-group">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                      type="password"
+                      id="senha"
+                      required
+                    >
+
+                    <label>
+                        Senha
+                    </label>
+
+                </div>
+
+                <!-- CONFIRMAR -->
+                <div class="input-group">
+
+                    <i class="fa-solid fa-lock"></i>
+
+                    <input
+                      type="password"
+                      id="confirmarSenha"
+                      required
+                    >
+
+                    <label>
+                        Confirmar senha
+                    </label>
+
+                </div>
+
+                <!-- CHECKBOX -->
+                <div class="options">
+
+                    <label class="remember">
+
+                        <input
+                          type="checkbox"
+                          id="termos"
+                        >
+
+                        Concordo com os termos
+
+                    </label>
+
+                </div>
+
+                <!-- BUTTON -->
+                <button type="submit">
+                    Criar Conta
+                </button>
+
+                <!-- LOGIN -->
+                <p class="register-link">
+
+                    Já possui conta?
+
+                    <a href="login.html">
+                        Entrar
+                    </a>
+
+                </p>
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <!-- SCRIPT -->
+    <script>
+
+      const formCadastro =
+        document.getElementById("formCadastro");
+
+
+      formCadastro.addEventListener(
+        "submit",
+
+        async (event) => {
+
+          event.preventDefault();
+
+
+          const nome =
+            document.getElementById("nome").value;
+
+          const email =
+            document.getElementById("email").value;
+
+          const telefone =
+            document.getElementById("telefone").value;
+
+          const senha =
+            document.getElementById("senha").value;
+
+          const confirmarSenha =
+            document.getElementById("confirmarSenha").value;
+
+          const termos =
+            document.getElementById("termos").checked;
+
+
+          if (senha !== confirmarSenha) {
+
+            alert("As senhas não conferem");
+
+            return;
+          }
+
+
+          if (!termos) {
+
+            alert("Você precisa aceitar os termos");
+
+            return;
+          }
+
+
+          const resposta = await fetch(
+            "http://localhost:3000/cadastro",
+            {
+
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json"
+              },
+
+              body: JSON.stringify({
+
+                nome,
+                email,
+                telefone,
+                senha
+              })
+            }
+          );
+
+
+          const dados =
+            await resposta.json();
+
+
+          if (!resposta.ok) {
+
+            alert(dados.erro);
+
+            return;
+          }
+
+
+          alert(dados.mensagem);
+
+
+          window.location.href =
+            "login.html";
+
+      });
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel Admin - Fut Store</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/admin.css">
+
+    <!-- ICONS -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body>
+
+    <!-- BACKGROUND -->
+    <div class="bg-effect"></div>
+
+    <!-- NAVBAR -->
+    <header>
+
+        <nav class="navbar">
+
+            <h2 class="logo">Fut Store</h2>
+
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="produtos.html">Produtos</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+
+        </nav>
+
+    </header>
+
+    <!-- MAIN -->
+    <main>
+
+        <!-- LEFT -->
+        <section class="admin-info">
+
+            <span class="badge">
+                Painel Administrativo
+            </span>
+
+            <h1>
+                Gerencie seus produtos
+            </h1>
+
+            <p>
+                Cadastre, edite e organize os produtos
+                da sua loja com um painel moderno e profissional.
+            </p>
+
+        </section>
+
+        <!-- RIGHT -->
+        <section class="admin-area">
+
+            <div class="admin-card">
+
+                <h2>Cadastrar Produto</h2>
+
+                <!-- PESQUISA -->
+                <div class="search-box">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input
+                        type="text"
+                        placeholder="Pesquisar produto..."
+                    >
+
+                </div>
+
+                <!-- NOME -->
+                <div class="input-group">
+
+                    <input
+                        type="text"
+                        id="nome"
+                        required
+                    >
+
+                    <label>
+                        Nome do produto
+                    </label>
+
+                </div>
+
+                <!-- PREÇO -->
+                <div class="input-group">
+
+                    <input
+                        type="number"
+                        id="preco"
+                        required
+                    >
+
+                    <label>
+                        Preço
+                    </label>
+
+                </div>
+
+                <!-- DESCRIÇÃO -->
+                <div class="input-group">
+
+                    <textarea
+                        id="descricao"
+                        required
+                    ></textarea>
+
+                    <label>
+                        Descrição do produto
+                    </label>
+
+                </div>
+
+                <!-- SELECT -->
+                <div class="select-group">
+
+                    <select id="categoria">
+
+                        <option value="">
+                            Selecione a categoria
+                        </option>
+
+                        <option value="camisetas">
+                            Camisetas
+                        </option>
+
+                        <option value="chuteiras">
+                            Chuteiras
+                        </option>
+
+                        <option value="acessorios">
+                            Acessórios
+                        </option>
+
+                        <option value="promocoes">
+                            Promoções
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- FILE -->
+                <div class="file-upload">
+
+                    <label for="imagem">
+                        <i class="fa-solid fa-image"></i>
+                        Escolher imagem
+                    </label>
+
+                    <input
+                        type="file"
+                        id="imagem"
+                        accept="image/*"
+                    >
+
+                </div>
+
+                <!-- BUTTON -->
+                <button id="btnSalvar">
+                    Salvar Produto
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- PRODUTOS -->
+    <section class="products-section">
+
+        <h2>Produtos cadastrados</h2>
+
+        <div id="listaProdutos"></div>
+
+    </section>
+
+</body>
+
+</html>
+
+  <script>
+
+  document
+    .getElementById("btnSalvar")
+    .addEventListener("click", async () => {
+
+      const nome =
+        document.getElementById("nome").value;
+
+      const preco =
+        document.getElementById("preco").value;
+
+      const imagem =
+        document.getElementById("imagem").files[0];
+      
+      const descricao = document.getElementById("descricao").value;
+      
+      const categoria = document.getElementById("categoria").value;
+
+
+     if (!nome || !preco || !descricao || !categoria || !imagem) {
+      alert("Preencha todos os campos");
+      return;
+    }
+
+
+      const formData = new FormData();
+
+      formData.append("nome", nome);
+
+      formData.append("preco", preco);
+
+      formData.append("imagem", imagem);
+
+      formData.append("descricao", descricao);
+
+      formData.append("categoria", categoria);
+
+
+      const resposta = await fetch(
+        "http://localhost:3000/produtos",
+        {
+
+          method: "POST",
+
+          body: formData
+        }
+      );
+
+
+      const dados = await resposta.json();
+
+      console.log(dados);
+
+
+      if (!resposta.ok) {
+
+        alert(dados.erro);
+
+        return;
+      }
+
+      alert("Produto salvo!");
+
+      carregarProdutos();
+
+    });
+
+
+
+
+  async function carregarProdutos() {
+
+    const resposta =
+      await fetch("http://localhost:3000/produtos");
+
+    const produtos =
+      await resposta.json();
+
+    const lista =
+      document.getElementById("listaProdutos");
+
+    lista.innerHTML = "";
+
+    produtos.forEach(produto => {
+
+      lista.innerHTML += `
+      
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:15px;
+          margin-top:15px;
+        ">
+
+          <img
+            src="${produto.imagem}"
+            width="80"
+            height="80"
+            style="object-fit:cover;"
+          >
+
+          <strong>
+            ${produto.nome}
+          </strong>
+
+          <span>
+            R$ ${produto.preco}
+          </span>
+
+          <button
+            onclick="excluirProduto(${produto.id})"
+          >
+            Excluir
+          </button>
+
+        </div>
+
+      `;
+    });
+
+  }
+
+
+
+  async function excluirProduto(id) {
+
+    await fetch(
+      `http://localhost:3000/produtos/${id}`,
+      {
+
+        method: "DELETE"
+      }
+    );
+
+    alert("Produto excluído!");
+
+    carregarProdutos();
+  }
+
+
+
+  carregarProdutos();
+
+</script>
+</body>
+
+</html>
