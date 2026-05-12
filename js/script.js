@@ -7,7 +7,6 @@ fetch("http://localhost:3000/produtos")
     const container =
       document.getElementById("produtos");
 
-
     produtos.forEach((produto, index) => {
 
       container.innerHTML += `
@@ -30,6 +29,36 @@ fetch("http://localhost:3000/produtos")
 
       </div>
       `;
+    });
+
+    // PESQUISA
+    const campoPesquisa =
+      document.getElementById("pesquisaProdutos");
+
+    campoPesquisa.addEventListener("input", () => {
+
+      const textoDigitado =
+        campoPesquisa.value.toLowerCase();
+
+      const cards =
+        document.querySelectorAll(".card-produto");
+
+      cards.forEach((produto) => {
+
+        const nomeProduto =
+          produto.querySelector("h3")
+          .textContent
+          .toLowerCase();
+
+        if (nomeProduto.includes(textoDigitado)) {
+
+          produto.style.display = "block";
+
+        } else {
+
+          produto.style.display = "none";
+        }
+      });
     });
 
 });

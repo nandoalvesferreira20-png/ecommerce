@@ -2,91 +2,55 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fut Store</title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="css/style.css">
 
-    <!-- ICONS -->
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     >
-
 </head>
 
 <body>
 
-    <!-- BG EFFECT -->
     <div class="bg-effect"></div>
 
-    <!-- ===================================================== -->
-    <!-- ======================= NAVBAR ====================== -->
-    <!-- ===================================================== -->
-
     <header>
-
         <nav class="navbar">
 
-            <!-- LOGO -->
-            <h2 class="logo">
-                Fut Store
-            </h2>
+            <h2 class="logo">Fut Store</h2>
 
-            <!-- MENU -->
             <ul class="menu">
-
                 <li>
-                    <a href="index.html">
-                        Home
-                    </a>
+                    <a href="index.html">Home</a>
                 </li>
 
                 <li>
-                    <a href="#">
-                        Produtos
-                    </a>
+                    <a href="#">Produtos</a>
                 </li>
 
                 <li>
-                    <a href="cadastro.html">
-                        Cadastro
-                    </a>
+                    <a href="cadastro.html">Cadastro</a>
                 </li>
 
-                <!-- USER -->
                 <li id="areaUsuario">
-
                     <a href="login.html">
                         <i class="fa-solid fa-user"></i>
                     </a>
-
                 </li>
 
-                <!-- CARRINHO -->
                 <li>
-
                     <a href="/carrinho">
                         <i class="fa-solid fa-cart-shopping"></i>
                     </a>
-
                 </li>
-
             </ul>
 
         </nav>
-
     </header>
-
-    <!-- ===================================================== -->
-    <!-- ======================== HERO ======================= -->
-    <!-- ===================================================== -->
 
     <section class="hero">
 
@@ -105,40 +69,27 @@
                 e acessórios premium para quem vive futebol.
             </p>
 
-            <!-- SEARCH -->
             <div class="search-box">
-
                 <i class="fa-solid fa-magnifying-glass"></i>
 
                 <input
                     type="text"
+                    id="pesquisaProdutos"
                     placeholder="Pesquisar produtos..."
                 >
-
             </div>
 
         </div>
 
     </section>
 
-    <!-- ===================================================== -->
-    <!-- ======================== MAIN ======================= -->
-    <!-- ===================================================== -->
-
     <main>
 
-        <!-- TITLE -->
         <div class="title-area">
-
             <h1 class="titulo-produtos">
                 Produtos em destaque
             </h1>
-
         </div>
-
-        <!-- ===================================================== -->
-        <!-- ======================= FILTROS ===================== -->
-        <!-- ===================================================== -->
 
         <div class="filtros">
 
@@ -164,54 +115,30 @@
 
         </div>
 
-        <!-- ===================================================== -->
-        <!-- ===================== CARROSSEL ===================== -->
-        <!-- ===================================================== -->
-
         <div class="carrossel-container">
 
-            <!-- LEFT -->
             <button class="seta" id="btn-esquerda">
-
                 <i class="fa-solid fa-chevron-left"></i>
-
             </button>
 
-            <!-- PRODUTOS -->
             <section id="produtos">
-
-                <!-- JS -->
-
+                <!-- Produtos aparecem aqui pelo JS -->
             </section>
 
-            <!-- RIGHT -->
             <button class="seta" id="btn-direita">
-
                 <i class="fa-solid fa-chevron-right"></i>
-
             </button>
 
         </div>
 
     </main>
 
-    <!-- ===================================================== -->
-    <!-- ======================= FOOTER ====================== -->
-    <!-- ===================================================== -->
-
     <footer>
-
         <p>
             © Fut Store - Todos os direitos reservados
         </p>
-
     </footer>
 
-</body>
-
-</html>
-
-    <!-- SCRIPT -->
     <script>
 
         // =========================
@@ -219,59 +146,52 @@
         // =========================
 
         const usuario =
-          JSON.parse(
-            localStorage.getItem("usuarioLogado")
-          );
-
+            JSON.parse(
+                localStorage.getItem("usuarioLogado")
+            );
 
         const areaUsuario =
-          document.getElementById("areaUsuario");
-
+            document.getElementById("areaUsuario");
 
         if (usuario) {
 
-          areaUsuario.innerHTML = `
+            areaUsuario.innerHTML = `
 
-            <div style="
-              display:flex;
-              align-items:center;
-              gap:10px;
-            ">
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                ">
 
-              <span style="
-                color:white;
-                font-size:14px;
-              ">
-                Olá, ${usuario.nome}
-              </span>
+                    <span style="
+                        color:white;
+                        font-size:14px;
+                    ">
+                        Olá, ${usuario.nome}
+                    </span>
 
-              <button
-                onclick="logout()"
-                style="
-                  padding:6px 12px;
-                  border:none;
-                  border-radius:8px;
-                  cursor:pointer;
-                "
-              >
-                Sair
-              </button>
+                    <button
+                        onclick="logout()"
+                        style="
+                            padding:6px 12px;
+                            border:none;
+                            border-radius:8px;
+                            cursor:pointer;
+                        "
+                    >
+                        Sair
+                    </button>
 
-            </div>
-
-          `;
+                </div>
+            `;
         }
-
 
         function logout() {
 
-          localStorage.removeItem(
-            "usuarioLogado"
-          );
+            localStorage.removeItem("usuarioLogado");
 
-          window.location.reload();
+            window.location.reload();
         }
-
 
 
         // =========================
@@ -280,59 +200,71 @@
 
         let listaProdutos = [];
 
-
         fetch("http://localhost:3000/produtos")
 
-        .then(res => res.json())
+            .then(res => res.json())
 
-        .then(produtos => {
+            .then(produtos => {
 
-            listaProdutos = produtos;
+                listaProdutos = produtos;
 
-            mostrarProdutos(listaProdutos);
+                mostrarProdutos(listaProdutos);
 
-        });
+            })
+
+            .catch(erro => {
+
+                console.log("Erro ao carregar produtos:", erro);
+
+            });
 
 
         function mostrarProdutos(produtos) {
 
             const container =
-              document.getElementById("produtos");
+                document.getElementById("produtos");
 
             container.innerHTML = "";
 
-
-            produtos.forEach(produto => {
+            produtos.forEach((produto, index) => {
 
                 container.innerHTML += `
-                
-                <div class="card-produto">
 
-                    <img
-                      src="${produto.imagem}"
-                      alt="${produto.nome}"
-                    >
+                    <div class="card-produto">
 
-                    <h3>${produto.nome}</h3>
+                        <img
+                            src="${produto.imagem}"
+                            alt="${produto.nome}"
+                        >
 
-                    <p>R$ ${produto.preco}</p>
+                        <h3>${produto.nome}</h3>
 
-                    <a href="produto.html?id=${produto.id}">
+                        <p>R$ ${produto.preco}</p>
 
-                        <button>
-                            Ver Produto
-                        </button>
+                        <a href="produto.html?id=${produto.id ?? index}">
 
-                    </a>
+                            <button>
+                                Ver Produto
+                            </button>
 
-                </div>
+                        </a>
 
+                    </div>
                 `;
             });
         }
 
 
+        // =========================
+        // FILTRO POR CATEGORIA
+        // =========================
+
         function filtrarCategoria(categoria) {
+
+            const campoPesquisa =
+                document.getElementById("pesquisaProdutos");
+
+            campoPesquisa.value = "";
 
             if (categoria === "todos") {
 
@@ -341,22 +273,47 @@
                 return;
             }
 
-
             const produtosFiltrados =
-              listaProdutos.filter(produto =>
+                listaProdutos.filter(produto =>
 
-                produto.categoria &&
+                    produto.categoria &&
 
-                produto.categoria
-                  .trim()
-                  .toLowerCase() === categoria
+                    produto.categoria
+                        .trim()
+                        .toLowerCase() === categoria
 
-              );
-
+                );
 
             mostrarProdutos(produtosFiltrados);
         }
 
+
+        // =========================
+        // PESQUISA
+        // =========================
+
+        const campoPesquisa =
+            document.getElementById("pesquisaProdutos");
+
+        campoPesquisa.addEventListener("input", () => {
+
+            const textoDigitado =
+                campoPesquisa.value
+                    .trim()
+                    .toLowerCase();
+
+            const produtosFiltrados =
+                listaProdutos.filter(produto =>
+
+                    produto.nome &&
+                    produto.nome
+                        .toLowerCase()
+                        .includes(textoDigitado)
+
+                );
+
+            mostrarProdutos(produtosFiltrados);
+        });
 
 
         // =========================
@@ -364,35 +321,29 @@
         // =========================
 
         const produtosContainer =
-          document.getElementById("produtos");
-
-
-        document
-          .getElementById("btn-direita")
-
-          .addEventListener("click", () => {
-
-            produtosContainer.scrollBy({
-
-                left: 300,
-
-                behavior: "smooth"
-            });
-        });
-
+            document.getElementById("produtos");
 
         document
-          .getElementById("btn-esquerda")
+            .getElementById("btn-direita")
+            .addEventListener("click", () => {
 
-          .addEventListener("click", () => {
+                produtosContainer.scrollBy({
+                    left: 300,
+                    behavior: "smooth"
+                });
 
-            produtosContainer.scrollBy({
-
-                left: -300,
-
-                behavior: "smooth"
             });
-        });
+
+        document
+            .getElementById("btn-esquerda")
+            .addEventListener("click", () => {
+
+                produtosContainer.scrollBy({
+                    left: -300,
+                    behavior: "smooth"
+                });
+
+            });
 
     </script>
 
