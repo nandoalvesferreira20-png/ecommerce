@@ -7,8 +7,13 @@ const path = require("path");
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// =========================
+// UPLOAD DE IMAGENS
+// =========================
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -22,6 +27,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// =========================
+// PRODUTOS
+// =========================
+
 app.get("/produtos", (req, res) => {
   const produtos = JSON.parse(
     fs.readFileSync(path.join(__dirname, "produtos.json"))
@@ -31,9 +40,6 @@ app.get("/produtos", (req, res) => {
 });
 
 app.post("/produtos", upload.single("imagem"), (req, res) => {
-  console.log("BODY:", req.body);
-  console.log("FILE:", req.file);
-
   if (!req.file) {
     return res.status(400).json({
       erro: "Imagem não enviada"
@@ -44,14 +50,14 @@ app.post("/produtos", upload.single("imagem"), (req, res) => {
     fs.readFileSync(path.join(__dirname, "produtos.json"))
   );
 
- const novoProduto = {
-  id: Date.now(),
-  nome: req.body.nome,
-  preco: req.body.preco,
-  descricao: req.body.descricao,
-  categoria: req.body.categoria,
-  imagem: `http://localhost:3000/uploads/${req.file.filename}`
-};
+  const novoProduto = {
+    id: Date.now(),
+    nome: req.body.nome,
+    preco: req.body.preco,
+    descricao: req.body.descricao,
+    categoria: req.body.categoria,
+    imagem: `http://localhost:3000/uploads/${req.file.filename}`
+  };
 
   produtos.push(novoProduto);
 
@@ -73,7 +79,8 @@ app.delete("/produtos/:id", (req, res) => {
     fs.readFileSync(path.join(__dirname, "produtos.json"))
   );
 
-  const produtosAtualizados = produtos.filter(produto => produto.id !== id);
+  const produtosAtualizados =
+    produtos.filter(produto => produto.id !== id);
 
   fs.writeFileSync(
     path.join(__dirname, "produtos.json"),
@@ -85,7 +92,9 @@ app.delete("/produtos/:id", (req, res) => {
   });
 });
 
-app.use(express.json());
+// =========================
+// CADASTRO
+// =========================
 
 app.post("/cadastro", (req, res) => {
   const { nome, email, telefone, senha } = req.body;
@@ -96,7 +105,8 @@ app.post("/cadastro", (req, res) => {
     });
   }
 
-  const caminhoUsuarios = path.join(__dirname, "usuarios.json");
+  const caminhoUsuarios =
+    path.join(__dirname, "usuarios.json");
 
   const usuarios = JSON.parse(
     fs.readFileSync(caminhoUsuarios)
@@ -132,7 +142,11 @@ app.post("/cadastro", (req, res) => {
   });
 });
 
-app.post("/login", express.json(), (req, res) => {
+// =========================
+// LOGIN
+// =========================
+
+app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
   if (!email || !senha) {
@@ -141,7 +155,8 @@ app.post("/login", express.json(), (req, res) => {
     });
   }
 
-  const caminhoUsuarios = path.join(__dirname, "usuarios.json");
+  const caminhoUsuarios =
+    path.join(__dirname, "usuarios.json");
 
   const usuarios = JSON.parse(
     fs.readFileSync(caminhoUsuarios)
@@ -167,6 +182,62 @@ app.post("/login", express.json(), (req, res) => {
     }
   });
 });
+
+// =========================
+// FEEDBACKS
+// =========================
+
+app.get("/feedbacks", (req, res) => {
+  const caminhoFeedbacks =
+    path.join(__dirname, "feedbacks.json");
+
+  const feedbacks = JSON.parse(
+    fs.readFileSync(caminhoFeedbacks)
+  );
+
+  res.json(feedbacks);
+});
+
+app.post("/feedbacks", (req, res) => {
+  const { nome, avaliacao, mensagem } = req.body;
+
+  if (!nome || !avaliacao || !mensagem) {
+    return res.status(400).json({
+      erro: "Preencha todos os campos"
+    });
+  }
+
+  const caminhoFeedbacks =
+    path.join(__dirname, "feedbacks.json");
+
+  const feedbacks = JSON.parse(
+    fs.readFileSync(caminhoFeedbacks)
+  );
+
+  const novoFeedback = {
+    id: Date.now(),
+    nome,
+    avaliacao,
+    mensagem,
+    data: new Date().toLocaleDateString("pt-BR")
+  };
+
+  feedbacks.push(novoFeedback);
+
+  fs.writeFileSync(
+    caminhoFeedbacks,
+    JSON.stringify(feedbacks, null, 2)
+  );
+
+  res.json({
+    mensagem: "Feedback enviado com sucesso!",
+    feedback: novoFeedback
+  });
+});
+
+// =========================
+// SERVIDOR
+// =========================
 
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");

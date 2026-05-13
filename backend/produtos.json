@@ -49,5 +49,13 @@
     "descricao": "Camiseta da maior cantora da história \r\n#chupatinaturner\r\n#chupamadonna\r\n#chupaamywhinehouse",
     "categoria": "camisetas",
     "imagem": "http://localhost:3000/uploads/1778296312044-image.png"
+  },
+  {
+    "id": 1778629938391,
+    "nome": "teste",
+    "preco": "200",
+    "descricao": "teste",
+    "categoria": "camisetas",
+    "imagem": "http://localhost:3000/uploads/1778629938381-transferir (6).jfif"
   }
 ]
