@@ -139,6 +139,7 @@ body{
 
 .hero-content{
     max-width: 750px;
+    color:white;
 }
 
 /* BADGE */
@@ -287,6 +288,7 @@ body{
 
 main{
     padding: 20px 8% 60px;
+    color: white;
 }
 
 /* TITLE */
