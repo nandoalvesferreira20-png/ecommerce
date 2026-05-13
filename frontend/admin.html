@@ -34,7 +34,11 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="produtos.html">Produtos</a></li>
                 <li><a href="admin.html">Admin</a></li>
-            </ul>
+<li>
+    <button id="toggle-theme" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+    </li>            </ul>
 
         </nav>
 
@@ -194,6 +198,49 @@
 </html>
 
   <script>
+
+
+const toggleBtn = document.getElementById('toggle-theme');
+
+toggleBtn.addEventListener('click', () => {
+
+    document.body.classList.toggle('light-mode');
+
+    const icon = toggleBtn.querySelector('i');
+
+    if(document.body.classList.contains('light-mode')){
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+
+        localStorage.setItem('theme', 'light');
+    }
+
+    else{
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+
+        localStorage.setItem('theme', 'dark');
+    }
+
+});
+
+/* SALVAR TEMA */
+
+window.addEventListener('load', () => {
+
+    const savedTheme = localStorage.getItem('theme');
+
+    if(savedTheme === 'light'){
+
+        document.body.classList.add('light-mode');
+
+        const icon = toggleBtn.querySelector('i');
+
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    }
+
+});
 
   document
     .getElementById("btnSalvar")

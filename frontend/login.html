@@ -25,37 +25,20 @@
 
       <h2 class="logo">Fut Store</h2>
 
-      <ul class="menu">
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="produtos.html">Produtos</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li href="/carrinho">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </a></li>
 
-        <li>
-          <a href="index.html">Home</a>
-        </li>
-
-        <li>
-          <a href="index.html#produtos">Produtos</a>
-        </li>
-
-        <li>
-          <a href="feedbacks.html">Feedbacks</a>
-        </li>
-
-        <li>
-          <a href="cadastro.html">Cadastro</a>
-        </li>
-
-        <li>
-          <a href="login.html">
-            <i class="fa-solid fa-user"></i>
-          </a>
-        </li>
-
-        <li>
-          <a href="/carrinho">
-            <i class="fa-solid fa-cart-shopping"></i>
-          </a>
-        </li>
-
-      </ul>
+<li>
+    <button id="toggle-theme" class="theme-btn">
+        <i class="fa-solid fa-moon"></i>
+    </button>
+    </li>
+            </ul>
 
     </nav>
     </header>
@@ -145,6 +128,51 @@
 
     <!-- LOGIN GOOGLE -->
     <script type="module">
+
+        
+
+const toggleBtn = document.getElementById('toggle-theme');
+
+toggleBtn.addEventListener('click', () => {
+
+    document.body.classList.toggle('light-mode');
+
+    const icon = toggleBtn.querySelector('i');
+
+    if(document.body.classList.contains('light-mode')){
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+
+        localStorage.setItem('theme', 'light');
+    }
+
+    else{
+        icon.classList.remove('fa-sun');
+        icon.classList.add('fa-moon');
+
+        localStorage.setItem('theme', 'dark');
+    }
+
+});
+
+/* SALVAR TEMA */
+
+window.addEventListener('load', () => {
+
+    const savedTheme = localStorage.getItem('theme');
+
+    if(savedTheme === 'light'){
+
+        document.body.classList.add('light-mode');
+
+        const icon = toggleBtn.querySelector('i');
+
+        icon.classList.remove('fa-moon');
+        icon.classList.add('fa-sun');
+    }
+
+});
+
 
         import { initializeApp }
         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
