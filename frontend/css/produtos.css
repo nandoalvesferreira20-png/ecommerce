@@ -1,0 +1,485 @@
+/* ===================================================== */
+/* ======================== RESET ====================== */
+/* ===================================================== */
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ===================================================== */
+/* ========================= BODY ====================== */
+/* ===================================================== */
+
+body{
+    font-family: 'Segoe UI', sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #020617,
+            #0f172a,
+            #111827
+        );
+
+    color: white;
+
+    overflow-x: hidden;
+}
+
+/* ===================================================== */
+/* ====================== BG EFFECT ==================== */
+/* ===================================================== */
+
+.bg-effect{
+    position: fixed;
+
+    width: 600px;
+    height: 600px;
+
+    background: #0ea5e9;
+
+    border-radius: 50%;
+
+    filter: blur(140px);
+
+    opacity: 0.12;
+
+    top: -200px;
+    right: -200px;
+
+    z-index: -1;
+}
+
+/* ===================================================== */
+/* ======================== NAVBAR ===================== */
+/* ===================================================== */
+
+.navbar{
+    width: 100%;
+
+    padding: 22px 8%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: rgba(15,23,42,0.75);
+
+    backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+
+    position: sticky;
+    top: 0;
+
+    z-index: 1000;
+}
+
+/* LOGO */
+
+.logo{
+    font-size: 30px;
+    font-weight: bold;
+
+    color: #38bdf8;
+}
+
+/* MENU */
+
+.menu{
+    display: flex;
+    gap: 35px;
+
+    list-style: none;
+}
+
+.menu a{
+    color: #e2e8f0;
+
+    text-decoration: none;
+
+    position: relative;
+
+    transition: 0.3s;
+}
+
+.menu a::after{
+    content: '';
+
+    width: 0%;
+    height: 2px;
+
+    background: #38bdf8;
+
+    position: absolute;
+
+    left: 0;
+    bottom: -6px;
+
+    transition: 0.3s;
+}
+
+.menu a:hover{
+    color: #38bdf8;
+}
+
+.menu a:hover::after{
+    width: 100%;
+}
+
+/* ===================================================== */
+/* ========================= MAIN ====================== */
+/* ===================================================== */
+
+main{
+    padding: 70px 8%;
+}
+
+/* ===================================================== */
+/* ==================== PRODUTO CARD =================== */
+/* ===================================================== */
+
+.produto-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 50px;
+
+    align-items: center;
+
+    background: rgba(255,255,255,0.06);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(20px);
+
+    border-radius: 32px;
+
+    padding: 40px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.35);
+}
+
+/* ===================================================== */
+/* ======================== IMG ======================== */
+/* ===================================================== */
+
+.produto-imagem{
+    overflow: hidden;
+
+    border-radius: 24px;
+}
+
+.produto-imagem img{
+    width: 100%;
+
+    height: 650px;
+
+    object-fit: cover;
+
+    transition: 0.4s;
+}
+
+.produto-imagem img:hover{
+    transform: scale(1.04);
+}
+
+/* ===================================================== */
+/* ======================== INFO ======================= */
+/* ===================================================== */
+
+.badge{
+    display: inline-block;
+
+    padding: 10px 18px;
+
+    border-radius: 999px;
+
+    background: rgba(56,189,248,0.12);
+
+    border: 1px solid rgba(56,189,248,0.25);
+
+    color: #38bdf8;
+
+    margin-bottom: 25px;
+}
+
+/* TITULO */
+
+.produto-info h1{
+    font-size: 52px;
+
+    line-height: 1.1;
+
+    margin-bottom: 20px;
+}
+
+/* AVALIAÇÃO */
+
+.avaliacao{
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 25px;
+
+    color: #facc15;
+}
+
+.avaliacao span{
+    color: #cbd5e1;
+}
+
+/* DESCRIÇÃO */
+
+.descricao{
+    color: #cbd5e1;
+
+    line-height: 1.8;
+
+    font-size: 17px;
+
+    margin-bottom: 35px;
+}
+
+/* PREÇO */
+
+.preco-area{
+    margin-bottom: 35px;
+}
+
+.preco{
+    font-size: 42px;
+
+    color: #38bdf8;
+
+    margin-bottom: 10px;
+}
+
+.parcelamento{
+    color: #94a3b8;
+}
+
+/* ===================================================== */
+/* ====================== TAMANHOS ===================== */
+/* ===================================================== */
+
+.tamanhos{
+    margin-bottom: 30px;
+}
+
+.tamanhos h3{
+    margin-bottom: 15px;
+}
+
+.tamanho-buttons{
+    display: flex;
+    gap: 12px;
+}
+
+.tamanho-buttons button{
+    width: 60px;
+    height: 60px;
+
+    border-radius: 16px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    background: rgba(255,255,255,0.05);
+
+    color: white;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.tamanho-buttons button:hover{
+    background: #38bdf8;
+
+    transform: translateY(-2px);
+}
+
+/* ===================================================== */
+/* ===================== QUANTIDADE ==================== */
+/* ===================================================== */
+
+.quantidade-area{
+    margin-bottom: 35px;
+}
+
+.quantidade-area h3{
+    margin-bottom: 15px;
+}
+
+.quantidade{
+    display: flex;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.quantidade button{
+    width: 45px;
+    height: 45px;
+
+    border-radius: 12px;
+
+    border: none;
+
+    background: rgba(255,255,255,0.08);
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.quantidade button:hover{
+    background: #38bdf8;
+}
+
+/* ===================================================== */
+/* ======================= BUTTONS ===================== */
+/* ===================================================== */
+
+.buttons{
+    display: flex;
+    gap: 20px;
+
+    flex-wrap: wrap;
+}
+
+/* BUY */
+
+.btn-comprar{
+    flex: 1;
+
+    padding: 18px;
+
+    border: none;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #38bdf8,
+            #0284c7
+        );
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.btn-comprar:hover{
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 25px rgba(14,165,233,0.35);
+}
+
+/* CART */
+
+.btn-carrinho{
+    flex: 1;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    background: rgba(255,255,255,0.05);
+
+    color: white;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.btn-carrinho:hover{
+    border-color: #38bdf8;
+
+    color: #38bdf8;
+}
+
+/* ===================================================== */
+/* ======================== FOOTER ===================== */
+/* ===================================================== */
+
+footer{
+    padding: 30px;
+
+    text-align: center;
+
+    border-top: 1px solid rgba(255,255,255,0.06);
+
+    color: #94a3b8;
+}
+
+/* ===================================================== */
+/* ====================== RESPONSIVO =================== */
+/* ===================================================== */
+
+@media(max-width: 1100px){
+
+    .produto-container{
+        grid-template-columns: 1fr;
+    }
+
+    .produto-imagem img{
+        height: 500px;
+    }
+}
+
+@media(max-width: 768px){
+
+    .navbar{
+        flex-direction: column;
+
+        gap: 20px;
+    }
+
+    .menu{
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 18px;
+    }
+
+    .produto-container{
+        padding: 25px;
+    }
+
+    .produto-info h1{
+        font-size: 38px;
+    }
+
+    .preco{
+        font-size: 34px;
+    }
+
+    .buttons{
+        flex-direction: column;
+    }
+
+    .produto-imagem img{
+        height: 400px;
+    }
+}
