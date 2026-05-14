@@ -433,6 +433,111 @@ footer{
 }
 
 /* ===================================================== */
+/* ====================== DARK MODE ==================== */
+/* ===================================================== */
+
+.theme-btn{
+    width: 45px;
+    height: 45px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.08);
+
+    color: white;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+    transition:
+        transform 0.3s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* HOVER */
+
+.theme-btn:hover{
+    transform: translateY(-2px) scale(1.05);
+
+    background: #38bdf8;
+
+    box-shadow:
+        0 8px 20px rgba(56,189,248,0.35);
+}
+
+/* CLICK */
+
+.theme-btn:active{
+    transform: scale(0.92);
+}
+
+/* ===================================================== */
+/* ====================== LIGHT MODE =================== */
+/* ===================================================== */
+
+body.light-mode{
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #e2e8f0,
+            #cbd5e1
+        );
+
+    color: #0f172a;
+}
+
+/* NAVBAR */
+
+body.light-mode .navbar{
+    background: rgba(255,255,255,0.75);
+
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+/* MENU */
+
+body.light-mode .menu a{
+    color: #0f172a;
+}
+
+/* TEXTO */
+
+body.light-mode .hero-content p{
+    color: #334155;
+}
+
+/* SEARCH */
+
+body.light-mode .search-box input{
+    background: rgba(255,255,255,0.8);
+
+    color: #0f172a;
+
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* CARDS */
+
+body.light-mode .produto-card{
+    background: rgba(255,255,255,0.85);
+
+    border: 1px solid rgba(0,0,0,0.08);
+}
+
+/* FOOTER */
+
+body.light-mode footer{
+    color: #334155;
+
+    border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+/* ===================================================== */
 /* ====================== RESPONSIVO =================== */
 /* ===================================================== */
 
@@ -482,4 +587,79 @@ footer{
     .produto-imagem img{
         height: 400px;
     }
+}
+.produto {
+  display: flex;
+  gap: 40px;
+  padding: 40px;
+}
+
+.produto-img {
+  width: 350px;
+  border-radius: 10px;
+}
+
+.produto-info {
+  max-width: 500px;
+}
+
+.produto-preco {
+  font-size: 28px;
+  font-weight: bold;
+  color: #0a9914;
+}
+
+.botoes {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.botoes button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn-ver {
+  background: #0057e7;
+  color: white;
+}
+
+.btn-carrinho {
+  background: #ffd000;
+}
+.produtos-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    padding: 20px;
+}
+
+.produto-card {
+    background: #0d1321;
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+}
+
+.produto-card img {
+    width: 100%;
+    border-radius: 6px;
+}
+
+.produto-card h3 {
+    font-size: 22px;
+    margin: 10px 0;
+}
+
+.produto-card .preco {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.produto-card button {
+    padding: 8px 12px;
 }
