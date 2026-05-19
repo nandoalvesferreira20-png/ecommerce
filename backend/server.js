@@ -39,10 +39,10 @@ app.get("/produtos", (req, res) => {
   res.json(produtos);
 });
 
-app.post("/produtos", upload.single("imagem"), (req, res) => {
-  if (!req.file) {
+app.post("/produtos", upload.array("imagens", 5), (req, res) => {
+  if (!req.files || req.files.length === 0) {
     return res.status(400).json({
-      erro: "Imagem não enviada"
+      erro: "Nenhuma imagem enviada"
     });
   }
 
@@ -50,13 +50,17 @@ app.post("/produtos", upload.single("imagem"), (req, res) => {
     fs.readFileSync(path.join(__dirname, "produtos.json"))
   );
 
+  const imagens = req.files.map(file => {
+    return `http://localhost:3000/uploads/${file.filename}`;
+  });
+
   const novoProduto = {
     id: Date.now(),
     nome: req.body.nome,
     preco: req.body.preco,
     descricao: req.body.descricao,
     categoria: req.body.categoria,
-    imagem: `http://localhost:3000/uploads/${req.file.filename}`
+    imagens: imagens
   };
 
   produtos.push(novoProduto);

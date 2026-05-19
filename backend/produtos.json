@@ -4,35 +4,45 @@
     "nome": "Camiseta Corinthians",
     "preco": "250",
     "descricao": "Camiseta masculina do Corinthians",
-    "imagem": "http://localhost:3000/uploads/1778277344923-transferir (1).jfif"
+    "imagens": [
+      "http://localhost:3000/uploads/1778277344923-transferir (1).jfif"
+    ]
   },
   {
     "id": 1778277405749,
     "nome": "Camiseta Seleção Brasileira",
     "preco": "250",
     "descricao": "Camiseta masculina do brasil",
-    "imagem": "http://localhost:3000/uploads/1778277405747-transferir (4).jfif"
+    "imagens": [
+      "http://localhost:3000/uploads/1778277405747-transferir (4).jfif"
+    ]
   },
   {
     "id": 1778277421183,
     "nome": "Camiseta PSG",
     "preco": "250",
     "descricao": "Camiseta masculina do PSG",
-    "imagem": "http://localhost:3000/uploads/1778277421181-transferir (5).jfif"
+    "imagens": [
+      "http://localhost:3000/uploads/1778277421181-transferir (5).jfif"
+    ]
   },
   {
     "id": 1778277433713,
     "nome": "Camiseta Seleção Argentina",
     "preco": "250",
     "descricao": "Camiseta masculina da argentina",
-    "imagem": "http://localhost:3000/uploads/1778277433711-transferir (6).jfif"
+    "imagens": [
+      "http://localhost:3000/uploads/1778277433711-transferir (6).jfif"
+    ]
   },
   {
     "id": 1778277521840,
     "nome": "Chuteira Futsal Nike Mercurial Vapor 16 Club",
     "preco": "199.99",
     "descricao": "Seja para começar ou jogar por diversão, o tênis Club leva você para o campo sem abrir mão da qualidade. A Vapor 16 foi feita pensando na velocidade. O que acontece se misturarmos essa velocidade com o toque na bola e o conforto? É bola na rede.",
-    "imagem": "http://localhost:3000/uploads/1778277521838-029393P1A2.jpg"
+    "imagens": [
+      "http://localhost:3000/uploads/1778277521838-029393P1A2.jpg"
+    ]
   },
   {
     "id": 1778292538461,
@@ -40,7 +50,9 @@
     "preco": "300",
     "descricao": "marwin é baitola",
     "categoria": "camisetas",
-    "imagem": "http://localhost:3000/uploads/1778292538371-transferir (6).jfif"
+    "imagens": [
+      "http://localhost:3000/uploads/1778292538371-transferir (6).jfif"
+    ]
   },
   {
     "id": 1778296312079,
@@ -48,7 +60,9 @@
     "preco": "500",
     "descricao": "Camiseta da maior cantora da história \r\n#chupatinaturner\r\n#chupamadonna\r\n#chupaamywhinehouse",
     "categoria": "camisetas",
-    "imagem": "http://localhost:3000/uploads/1778296312044-image.png"
+    "imagens": [
+      "http://localhost:3000/uploads/1778296312044-image.png"
+    ]
   },
   {
     "id": 1778629938391,
@@ -56,6 +70,8 @@
     "preco": "200",
     "descricao": "teste",
     "categoria": "camisetas",
-    "imagem": "http://localhost:3000/uploads/1778629938381-transferir (6).jfif"
+    "imagens": [
+      "http://localhost:3000/uploads/1778629938381-transferir (6).jfif"
+    ]
   }
 ]

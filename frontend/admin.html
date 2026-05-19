@@ -34,11 +34,14 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="produtos.html">Produtos</a></li>
                 <li><a href="admin.html">Admin</a></li>
-<li>
-    <button id="toggle-theme" class="theme-btn">
-        <i class="fa-solid fa-moon"></i>
-    </button>
-    </li>            </ul>
+
+                <li>
+                    <button id="toggle-theme" class="theme-btn">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </li>
+
+            </ul>
 
         </nav>
 
@@ -160,14 +163,16 @@
                 <!-- FILE -->
                 <div class="file-upload">
 
-                    <label for="imagem">
+                    <label for="imagens">
                         <i class="fa-solid fa-image"></i>
-                        Escolher imagem
+                        Escolher imagens
                     </label>
 
                     <input
                         type="file"
-                        id="imagem"
+                        id="imagens"
+                        name="imagens"
+                        multiple
                         accept="image/*"
                     >
 
@@ -193,12 +198,7 @@
 
     </section>
 
-</body>
-
-</html>
-
-  <script>
-
+<script>
 
 const toggleBtn = document.getElementById('toggle-theme');
 
@@ -242,149 +242,146 @@ window.addEventListener('load', () => {
 
 });
 
-  document
-    .getElementById("btnSalvar")
-    .addEventListener("click", async () => {
+document
+  .getElementById("btnSalvar")
+  .addEventListener("click", async () => {
 
-      const nome =
-        document.getElementById("nome").value;
+    const nome =
+      document.getElementById("nome").value;
 
-      const preco =
-        document.getElementById("preco").value;
+    const preco =
+      document.getElementById("preco").value;
 
-      const imagem =
-        document.getElementById("imagem").files[0];
-      
-      const descricao = document.getElementById("descricao").value;
-      
-      const categoria = document.getElementById("categoria").value;
+    const descricao =
+      document.getElementById("descricao").value;
 
+    const categoria =
+      document.getElementById("categoria").value;
 
-     if (!nome || !preco || !descricao || !categoria || !imagem) {
+    const imagens =
+      document.getElementById("imagens").files;
+
+    if (
+      !nome ||
+      !preco ||
+      !descricao ||
+      !categoria ||
+      imagens.length === 0
+    ) {
+
       alert("Preencha todos os campos");
+
       return;
     }
 
+    const formData = new FormData();
 
-      const formData = new FormData();
+    formData.append("nome", nome);
 
-      formData.append("nome", nome);
+    formData.append("preco", preco);
 
-      formData.append("preco", preco);
+    formData.append("descricao", descricao);
 
-      formData.append("imagem", imagem);
+    formData.append("categoria", categoria);
 
-      formData.append("descricao", descricao);
+    for (let i = 0; i < imagens.length; i++) {
+      formData.append("imagens", imagens[i]);
+    }
 
-      formData.append("categoria", categoria);
-
-
-      const resposta = await fetch(
-        "http://localhost:3000/produtos",
-        {
-
-          method: "POST",
-
-          body: formData
-        }
-      );
-
-
-      const dados = await resposta.json();
-
-      console.log(dados);
-
-
-      if (!resposta.ok) {
-
-        alert(dados.erro);
-
-        return;
-      }
-
-      alert("Produto salvo!");
-
-      carregarProdutos();
-
-    });
-
-
-
-
-  async function carregarProdutos() {
-
-    const resposta =
-      await fetch("http://localhost:3000/produtos");
-
-    const produtos =
-      await resposta.json();
-
-    const lista =
-      document.getElementById("listaProdutos");
-
-    lista.innerHTML = "";
-
-    produtos.forEach(produto => {
-
-      lista.innerHTML += `
-      
-        <div style="
-          display:flex;
-          align-items:center;
-          gap:15px;
-          margin-top:15px;
-        ">
-
-          <img
-            src="${produto.imagem}"
-            width="80"
-            height="80"
-            style="object-fit:cover;"
-          >
-
-          <strong>
-            ${produto.nome}
-          </strong>
-
-          <span>
-            R$ ${produto.preco}
-          </span>
-
-          <button
-            onclick="excluirProduto(${produto.id})"
-          >
-            Excluir
-          </button>
-
-        </div>
-
-      `;
-    });
-
-  }
-
-
-
-  async function excluirProduto(id) {
-
-    await fetch(
-      `http://localhost:3000/produtos/${id}`,
+    const resposta = await fetch(
+      "http://localhost:3000/produtos",
       {
-
-        method: "DELETE"
+        method: "POST",
+        body: formData
       }
     );
 
-    alert("Produto excluído!");
+    const dados = await resposta.json();
+
+    console.log(dados);
+
+    if (!resposta.ok) {
+
+      alert(dados.erro);
+
+      return;
+    }
+
+    alert("Produto salvo!");
 
     carregarProdutos();
-  }
 
+  });
 
+async function carregarProdutos() {
+
+  const resposta =
+    await fetch("http://localhost:3000/produtos");
+
+  const produtos =
+    await resposta.json();
+
+  const lista =
+    document.getElementById("listaProdutos");
+
+  lista.innerHTML = "";
+
+  produtos.forEach(produto => {
+
+    lista.innerHTML += `
+    
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:15px;
+        margin-top:15px;
+      ">
+
+        <img
+          src="${produto.imagens[0]}"
+          width="80"
+          height="80"
+          style="object-fit:cover;"
+        >
+
+        <strong>
+          ${produto.nome}
+        </strong>
+
+        <span>
+          R$ ${produto.preco}
+        </span>
+
+        <button
+          onclick="excluirProduto(${produto.id})"
+        >
+          Excluir
+        </button>
+
+      </div>
+
+    `;
+  });
+
+}
+
+async function excluirProduto(id) {
+
+  await fetch(
+    `http://localhost:3000/produtos/${id}`,
+    {
+      method: "DELETE"
+    }
+  );
+
+  alert("Produto excluído!");
 
   carregarProdutos();
+}
+
+carregarProdutos();
 
 </script>
-</body>
 
+</body>
 </html>
