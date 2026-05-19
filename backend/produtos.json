@@ -73,5 +73,27 @@
     "imagens": [
       "http://localhost:3000/uploads/1778629938381-transferir (6).jfif"
     ]
+  },
+  {
+    "id": 1779214674656,
+    "nome": "camiseta spfc",
+    "preco": "300",
+    "descricao": "teste",
+    "categoria": "camisetas",
+    "imagens": [
+      "http://localhost:3000/uploads/1779214674635-download (2).jpg",
+      "http://localhost:3000/uploads/1779214674642-download (1).jpg",
+      "http://localhost:3000/uploads/1779214674643-download.jpg"
+    ]
+  },
+  {
+    "id": 1779214903803,
+    "nome": "aaaa",
+    "preco": "222",
+    "descricao": "aaaa",
+    "categoria": "camisetas",
+    "imagens": [
+      "http://localhost:3000/uploads/1779214903800-image.png"
+    ]
   }
 ]

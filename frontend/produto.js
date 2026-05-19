@@ -1,58 +1,78 @@
 const params = new URLSearchParams(window.location.search);
+
 const id = Number(params.get("id"));
 
-let imagemAtual = 0;
-let imagensProduto = [];
-
 fetch("http://localhost:3000/produtos")
+
   .then(res => res.json())
+
   .then(produtos => {
-    const produto = produtos.find(item => item.id === id);
-    const container = document.getElementById("produto");
+
+    const produto =
+      produtos.find(item => item.id === id);
+
+    const container =
+      document.getElementById("produto");
 
     if (!produto) {
-      container.innerHTML = "<h2>Produto não encontrado</h2>";
+
+      container.innerHTML =
+        "<h2>Produto não encontrado</h2>";
+
       return;
     }
 
-    imagensProduto = produto.imagens || [];
-
     container.innerHTML = `
+
       <div class="pagina-produto">
 
-        <div class="produto-imagem carrossel">
+        <!-- GALERIA -->
+        <div class="galeria-produto">
 
-          <button class="btn-carrossel anterior" onclick="voltarImagem()">
-            ❮
-          </button>
+          <!-- MINIATURAS -->
+          <div class="miniaturas-laterais">
 
-          <img
-            id="imagemPrincipal"
-            src="${imagensProduto[0]}"
-            class="imagem-principal"
-          >
+            ${produto.imagens.map((imagem, index) => `
+              
+              <img
+                src="${imagem}"
+                class="miniatura-lateral ${index === 0 ? "ativa" : ""}"
+                onclick="trocarImagem('${imagem}', this)"
+              >
 
-          <button class="btn-carrossel proximo" onclick="avancarImagem()">
-            ❯
-          </button>
+            `).join("")}
 
-          <div class="contador-imagens">
-            <span id="contadorImagem">1</span> / ${imagensProduto.length}
+          </div>
+
+          <!-- IMAGEM PRINCIPAL -->
+          <div class="imagem-principal-box">
+
+            <img
+              id="imagemPrincipal"
+              src="${produto.imagens[0]}"
+              class="imagem-principal"
+            >
+
           </div>
 
         </div>
 
+        <!-- INFO -->
         <div class="produto-info">
 
           <h1>${produto.nome}</h1>
 
-          <p class="produto-preco">R$ ${produto.preco}</p>
+          <p class="produto-preco">
+            R$ ${produto.preco}
+          </p>
 
           <p class="produto-descricao">
             ${produto.descricao || "Produto sem descrição."}
           </p>
 
+          <!-- TAMANHOS -->
           <div class="tamanhos">
+
             <h3>Tamanho</h3>
 
             <div class="opcoes-tamanho">
@@ -61,9 +81,12 @@ fetch("http://localhost:3000/produtos")
               <button>G</button>
               <button>GG</button>
             </div>
+
           </div>
 
+          <!-- AÇÕES -->
           <div class="acoes-produto">
+
             <button class="btn-carrinho">
               Adicionar ao carrinho
             </button>
@@ -71,50 +94,165 @@ fetch("http://localhost:3000/produtos")
             <button class="btn-comprar">
               Comprar agora
             </button>
+
           </div>
 
+          <!-- BENEFÍCIOS -->
           <div class="beneficios">
+
             <p>✓ Envio para todo o Brasil</p>
+
             <p>✓ Compra segura</p>
+
             <p>✓ Troca em até 7 dias</p>
+
+          </div>
+        <div class="frete-box">
+
+          <h3>Calcular frete</h3>
+
+            <div class="frete-inputs">
+
+              <input
+                type="text"
+                id="cep"
+                placeholder="Digite seu CEP"
+                maxlength="9"
+                  >
+
+                <button onclick="calcularFrete()">
+                  Calcular
+                </button>
+
+              </div>
+
+            <div id="resultadoFrete"></div>
+
           </div>
 
         </div>
 
       </div>
+
     `;
+
   })
+
   .catch(erro => {
-    console.error("Erro ao carregar produto:", erro);
+
+    console.error(
+      "Erro ao carregar produto:",
+      erro
+    );
 
     document.getElementById("produto").innerHTML =
       "<h2>Erro ao carregar produto.</h2>";
+
   });
 
-function atualizarImagem() {
-  document.getElementById("imagemPrincipal").src =
-    imagensProduto[imagemAtual];
 
-  document.getElementById("contadorImagem").textContent =
-    imagemAtual + 1;
+// =========================
+// TROCAR IMAGEM
+// =========================
+
+function trocarImagem(imagem, elemento) {
+
+  // troca imagem principal
+  document.getElementById(
+    "imagemPrincipal"
+  ).src = imagem;
+
+  // remove borda ativa
+  document
+    .querySelectorAll(".miniatura-lateral")
+    .forEach(img => {
+      img.classList.remove("ativa");
+    });
+
+  // adiciona borda ativa
+  elemento.classList.add("ativa");
+
 }
 
-function avancarImagem() {
-  imagemAtual++;
+async function calcularFrete() {
+  const inputCep = document.getElementById("cep");
+  const resultadoFrete = document.getElementById("resultadoFrete");
 
-  if (imagemAtual >= imagensProduto.length) {
-    imagemAtual = 0;
+  let cep = inputCep.value.replace(/\D/g, "");
+
+  if (cep.length !== 8) {
+    resultadoFrete.innerHTML = `
+      <p style="color: #f87171;">
+        Digite um CEP válido.
+      </p>
+    `;
+    return;
   }
 
-  atualizarImagem();
-}
+  resultadoFrete.innerHTML = `
+    <p>Consultando CEP...</p>
+  `;
 
-function voltarImagem() {
-  imagemAtual--;
+  try {
+    const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const endereco = await resposta.json();
 
-  if (imagemAtual < 0) {
-    imagemAtual = imagensProduto.length - 1;
+    if (endereco.erro) {
+      resultadoFrete.innerHTML = `
+        <p style="color: #f87171;">
+          CEP não encontrado.
+        </p>
+      `;
+      return;
+    }
+
+    let valorFrete;
+    let prazo;
+
+    if (endereco.uf === "SP") {
+      valorFrete = 12.90;
+      prazo = "2 a 3 dias úteis";
+    } else if (
+      endereco.uf === "RJ" ||
+      endereco.uf === "MG" ||
+      endereco.uf === "ES"
+    ) {
+      valorFrete = 18.90;
+      prazo = "3 a 5 dias úteis";
+    } else {
+      valorFrete = 29.90;
+      prazo = "5 a 9 dias úteis";
+    }
+
+    resultadoFrete.innerHTML = `
+      <p>
+        <strong>Entrega para:</strong>
+        ${endereco.localidade} - ${endereco.uf}
+      </p>
+
+      <p>
+        <strong>Bairro:</strong>
+        ${endereco.bairro || "Não informado"}
+      </p>
+
+      <p>
+        <strong>Frete:</strong>
+        R$ ${valorFrete.toFixed(2).replace(".", ",")}
+      </p>
+
+      <p>
+        <strong>Prazo:</strong>
+        ${prazo}
+      </p>
+    `;
+
+  } catch (erro) {
+    console.error("Erro ao consultar ViaCEP:", erro);
+
+    resultadoFrete.innerHTML = `
+      <p style="color: #f87171;">
+        Erro ao consultar CEP. Tente novamente.
+      </p>
+    `;
   }
-
-  atualizarImagem();
 }
