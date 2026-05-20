@@ -661,3 +661,232 @@ body.light-mode footer{
         height: 45px;
     }
 }
+
+/* Container principal - CORRIGIDO */
+.quantidade-container {
+  display: block;       
+  width: 100%;          
+  clear: both;          /* Força qualquer elemento abaixo dele a ir para a próxima linha */
+  margin-top: 20px;
+  margin-bottom: 35px;  /* Aumentado para 35px para garantir o espaço */
+  color: #ffffff;
+}
+
+.quantidade-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+/* O seletor em si - AJUSTADO */
+.seletor-quantidade {
+  display: inline-flex; /* Mudado para inline-flex para não esticar o input na tela toda */
+  align-items: center;
+  background-color: #1e2530; 
+  border: 1px solid #333c4d;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Botões de + e - */
+.seletor-quantidade button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 18px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.seletor-quantidade button:hover {
+  background-color: #2a3444; 
+}
+
+/* O campo de texto com o número */
+.seletor-quantidade input[type="number"] {
+  background: none;
+  border: none;
+  color: #ffffff;
+  text-align: center;
+  font-size: 16px;
+  width: 40px;
+  height: 40px;
+  -moz-appearance: textfield; 
+}
+
+/* Remove as setinhas padrão no Chrome/Safari */
+.seletor-quantidade input::-webkit-outer-spin-button,
+.seletor-quantidade input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ===================================================== */
+/* ================= QTD NO LIGHT MODE ================= */
+/* ===================================================== */
+body.light-mode .quantidade-container {
+    color: #0f172a;
+}
+body.light-mode .seletor-quantidade {
+    background-color: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+body.light-mode .seletor-quantidade button {
+    color: #0f172a;
+}
+body.light-mode .seletor-quantidade button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+body.light-mode .seletor-quantidade input[type="number"] {
+    color: #0f172a;
+}
+/* ===================================================== */
+/* ======= CORREÇÃO FINAL - QUANTIDADE / BOTÕES ======== */
+/* ===================================================== */
+
+.pagina-produto .produto-info .quantidade-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+
+    width: 100% !important;
+
+    margin-top: 28px !important;
+    margin-bottom: 42px !important;
+
+    padding-bottom: 0 !important;
+
+    clear: both !important;
+}
+
+.pagina-produto .produto-info .quantidade-container label {
+    display: block !important;
+
+    margin-bottom: 10px !important;
+
+    font-size: 18px !important;
+    font-weight: 700 !important;
+
+    color: #e2e8f0 !important;
+}
+
+.pagina-produto .produto-info .seletor-quantidade {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 10px !important;
+
+    width: auto !important;
+    max-width: max-content !important;
+}
+
+.pagina-produto .produto-info .seletor-quantidade button {
+    width: 38px !important;
+    height: 38px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: none !important;
+    border-radius: 10px !important;
+
+    background: rgba(255,255,255,0.08) !important;
+    color: #ffffff !important;
+
+    font-size: 20px !important;
+    font-weight: 700 !important;
+
+    cursor: pointer !important;
+}
+
+.pagina-produto .produto-info .seletor-quantidade input[type="number"] {
+    width: 60px !important;
+    height: 38px !important;
+
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    border-radius: 10px !important;
+
+    background: #ffffff !important;
+    color: #0f172a !important;
+
+    text-align: center !important;
+
+    font-size: 16px !important;
+    font-weight: 700 !important;
+
+    outline: none !important;
+
+    -moz-appearance: textfield !important;
+}
+
+.pagina-produto .produto-info .seletor-quantidade input::-webkit-outer-spin-button,
+.pagina-produto .produto-info .seletor-quantidade input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+.pagina-produto .produto-info .acoes-produto {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 30px !important;
+
+    width: 100% !important;
+
+    margin-top: 0 !important;
+    margin-bottom: 36px !important;
+}
+
+.pagina-produto .produto-info .btn-carrinho,
+.pagina-produto .produto-info .btn-comprar {
+    width: auto !important;
+    min-width: 280px !important;
+
+    padding: 22px 36px !important;
+
+    border-radius: 24px !important;
+
+    font-size: 20px !important;
+    font-weight: 700 !important;
+
+    cursor: pointer !important;
+}
+
+.pagina-produto .produto-info .btn-carrinho {
+    background: rgba(255,255,255,0.06) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+.pagina-produto .produto-info .btn-comprar {
+    border: none !important;
+
+    background: linear-gradient(
+        135deg,
+        #38bdf8,
+        #0284c7
+    ) !important;
+
+    color: #ffffff !important;
+}
+
+@media(max-width: 768px) {
+    .pagina-produto .produto-info .acoes-produto {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 16px !important;
+    }
+
+    .pagina-produto .produto-info .btn-carrinho,
+    .pagina-produto .produto-info .btn-comprar {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+}
