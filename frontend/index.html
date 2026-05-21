@@ -155,6 +155,17 @@
 
 const toggleBtn = document.getElementById('toggle-theme');
 
+const savedTheme = localStorage.getItem('theme');
+
+if(savedTheme === 'light'){
+    document.body.classList.add('light-mode');
+
+    const icon = toggleBtn.querySelector('i');
+
+    icon.classList.remove('fa-moon');
+    icon.classList.add('fa-sun');
+}
+
 toggleBtn.addEventListener('click', () => {
 
     document.body.classList.toggle('light-mode');

@@ -26,8 +26,11 @@ body{
     color: white;
 
     overflow-x: hidden;
-}
 
+    transition:
+        background 0.4s ease,
+        color 0.4s ease;
+}
 /* ===================================================== */
 /* ====================== BG EFFECT ==================== */
 /* ===================================================== */
@@ -513,14 +516,14 @@ footer{
 /* ===================================================== */
 
 .theme-btn{
-    width: 45px;
-    height: 45px;
+    width: 46px;
+    height: 46px;
 
-    border: none;
+    border: 1px solid rgba(255,255,255,0.08);
 
     border-radius: 50%;
 
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.06);
 
     color: white;
 
@@ -528,10 +531,13 @@ footer{
 
     font-size: 16px;
 
+    backdrop-filter: blur(10px);
+
     transition:
         transform 0.3s ease,
         background 0.3s ease,
-        box-shadow 0.3s ease;
+        box-shadow 0.3s ease,
+        color 0.3s ease;
 }
 
 /* HOVER */
@@ -560,49 +566,140 @@ body.light-mode{
         linear-gradient(
             135deg,
             #f8fafc,
-            #e2e8f0,
-            #cbd5e1
+            #eef2ff,
+            #e2e8f0
         );
 
     color: #0f172a;
 }
 
+/* BG EFFECT */
+
+body.light-mode .bg-effect{
+    background: #38bdf8;
+    opacity: 0.08;
+}
+
 /* NAVBAR */
 
 body.light-mode .navbar{
-    background: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,0.85);
 
-    border-bottom: 1px solid rgba(0,0,0,0.08);
+    backdrop-filter: blur(14px);
+
+    border-bottom: 1px solid rgba(15,23,42,0.08);
+
+    box-shadow:
+        0 4px 20px rgba(15,23,42,0.05);
+}
+
+/* LOGO */
+
+body.light-mode .logo{
+    color: #0284c7;
 }
 
 /* MENU */
 
 body.light-mode .menu a{
     color: #0f172a;
+    font-weight: 500;
 }
 
-/* TEXTO */
+body.light-mode .menu a:hover{
+    color: #0284c7;
+}
+
+/* HERO */
+
+body.light-mode .hero-content{
+    color: #0f172a;
+}
 
 body.light-mode .hero-content p{
     color: #334155;
 }
 
+/* BADGE */
+
+body.light-mode .badge{
+    background: rgba(14,165,233,0.12);
+
+    border: 1px solid rgba(14,165,233,0.18);
+
+    color: #0284c7;
+}
+
 /* SEARCH */
 
 body.light-mode .search-box input{
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.9);
 
     color: #0f172a;
 
-    border: 1px solid rgba(0,0,0,0.08);
+    border: 1px solid rgba(15,23,42,0.08);
+
+    box-shadow:
+        0 8px 25px rgba(15,23,42,0.04);
+}
+
+body.light-mode .search-box i{
+    color: #64748b;
+}
+
+/* FILTROS */
+
+body.light-mode .filtros button{
+    background: rgba(255,255,255,0.9);
+
+    color: #0f172a;
+
+    border: 1px solid rgba(15,23,42,0.08);
+
+    box-shadow:
+        0 4px 15px rgba(15,23,42,0.04);
+}
+
+body.light-mode .filtros button:hover{
+    background: #38bdf8;
+    color: white;
+}
+
+/* SETAS */
+
+body.light-mode .seta{
+    background: rgba(255,255,255,0.95);
+
+    color: #0f172a;
+
+    border: 1px solid rgba(15,23,42,0.08);
+
+    box-shadow:
+        0 4px 15px rgba(15,23,42,0.05);
 }
 
 /* CARDS */
 
 body.light-mode .produto-card{
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.95);
 
-    border: 1px solid rgba(0,0,0,0.08);
+    border: 1px solid rgba(15,23,42,0.06);
+
+    box-shadow:
+        0 10px 30px rgba(15,23,42,0.05);
+}
+
+/* TEXTO CARD */
+
+body.light-mode .produto-info p{
+    color: #475569;
+}
+
+/* BOTÃO COMPRAR */
+
+body.light-mode .btn-comprar{
+    box-shadow:
+        0 10px 25px rgba(14,165,233,0.18);
 }
 
 /* FOOTER */
@@ -610,9 +707,16 @@ body.light-mode .produto-card{
 body.light-mode footer{
     color: #334155;
 
-    border-top: 1px solid rgba(0,0,0,0.08);
+    border-top: 1px solid rgba(15,23,42,0.08);
 }
 
+/* BOTÃO THEME */
+
+body.light-mode .theme-btn{
+    background: rgba(15,23,42,0.06);
+
+    color: #0f172a;
+}
 /* ===================================================== */
 /* ====================== RESPONSIVO =================== */
 /* ===================================================== */
