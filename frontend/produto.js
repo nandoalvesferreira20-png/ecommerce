@@ -83,7 +83,14 @@ fetch("http://localhost:3000/produtos")
             </div>
 
           </div>
-
+            <div class="quantidade-container">
+                <label for="quantidade">Quantidade:</label>
+                  <div class="seletor-quantidade">
+                    <button type="button" class="btn-menos" onclick="alterarQtd(-1)">-</button>
+                    <input type="number" id="quantidade" value="1" min="1" max="10" readonly>
+                <button type="button" class="btn-mais" onclick="alterarQtd(1)">+</button>
+            </div>
+        </div>
           <!-- AÇÕES -->
           <div class="acoes-produto">
 
@@ -254,5 +261,21 @@ async function calcularFrete() {
         Erro ao consultar CEP. Tente novamente.
       </p>
     `;
+  }
+}
+
+function alterarQtd(valor) {
+  const inputQtd = document.getElementById('quantidade');
+  let valorAtual = parseInt(inputQtd.value);
+  
+  // Calcula o novo valor
+  valorAtual += valor;
+  
+  // Garante que não vai ser menor que o mínimo (1) e nem maior que o máximo (ex: 10)
+  const min = parseInt(inputQtd.getAttribute('min'));
+  const max = parseInt(inputQtd.getAttribute('max'));
+  
+  if (valorAtual >= min && valorAtual <= max) {
+    inputQtd.value = valorAtual;
   }
 }
