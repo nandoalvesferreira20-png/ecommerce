@@ -81,6 +81,6 @@ const formCadastro =
 
 
           window.location.href =
-            "login.html";
+            "frontend/login.html";
 
       });

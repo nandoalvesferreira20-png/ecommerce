@@ -3,6 +3,8 @@ const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
@@ -60,7 +62,7 @@ app.post("/produtos", upload.array("imagens", 5), (req, res) => {
     preco: req.body.preco,
     descricao: req.body.descricao,
     categoria: req.body.categoria,
-    imagens: imagens
+    imagens
   };
 
   produtos.push(novoProduto);
@@ -100,7 +102,7 @@ app.delete("/produtos/:id", (req, res) => {
 // CADASTRO
 // =========================
 
-app.post("/cadastro", (req, res) => {
+app.post("/usuarios", async (req, res) => {
   const { nome, email, telefone, senha } = req.body;
 
   if (!nome || !email || !telefone || !senha) {
@@ -126,12 +128,15 @@ app.post("/cadastro", (req, res) => {
     });
   }
 
+  const senhaCriptografada =
+    await bcrypt.hash(senha, 10);
+
   const novoUsuario = {
     id: Date.now(),
     nome,
     email,
     telefone,
-    senha
+    senha: senhaCriptografada
   };
 
   usuarios.push(novoUsuario);
@@ -150,7 +155,7 @@ app.post("/cadastro", (req, res) => {
 // LOGIN
 // =========================
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { email, senha } = req.body;
 
   if (!email || !senha) {
@@ -167,7 +172,7 @@ app.post("/login", (req, res) => {
   );
 
   const usuario = usuarios.find(
-    usuario => usuario.email === email && usuario.senha === senha
+    usuario => usuario.email === email
   );
 
   if (!usuario) {
@@ -176,8 +181,30 @@ app.post("/login", (req, res) => {
     });
   }
 
+  const senhaCorreta =
+    await bcrypt.compare(senha, usuario.senha);
+
+  if (!senhaCorreta) {
+    return res.status(401).json({
+      erro: "E-mail ou senha inválidos"
+    });
+  }
+
+  const token = jwt.sign(
+    {
+      id: usuario.id,
+      email: usuario.email
+    },
+    "segredo_temporario",
+    {
+      expiresIn: "1d"
+    }
+  );
+
   res.json({
     mensagem: "Login realizado com sucesso!",
+    token,
+
     usuario: {
       id: usuario.id,
       nome: usuario.nome,
