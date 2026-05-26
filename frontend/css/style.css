@@ -62,13 +62,15 @@ body{
 .navbar{
     width: 100%;
 
-    padding: 22px 8%;
+    height: 74px;
+
+    padding: 0 60px;
 
     display: flex;
-    justify-content: space-between;
+
     align-items: center;
 
-    background: rgba(15,23,42,0.75);
+    background: rgba(15,23,42,0.82);
 
     backdrop-filter: blur(12px);
 
@@ -79,34 +81,50 @@ body{
 
     z-index: 1000;
 }
-
 /* LOGO */
 
 .logo{
-    font-size: 30px;
-    font-weight: bold;
+    font-size: 26px;
+
+    font-weight: 700;
 
     color: #38bdf8;
-}
+
+    margin-right: auto;
+
+    padding-left: 18px;
+}   
 
 /* MENU */
 
 .menu{
     display: flex;
-    gap: 35px;
+
+    align-items: center;
+
+    gap: 34px;
 
     list-style: none;
+
+    padding-right: 18px;
 }
+/* LINKS */
 
 .menu a{
     color: #e2e8f0;
 
     text-decoration: none;
 
+    font-size: 16px;
+
+    font-weight: 500;
+
     position: relative;
 
-    transition: 0.3s;
+    transition: 0.3s ease;
 }
+
+/* LINHA HOVER */
 
 .menu a::after{
     content: '';
@@ -119,9 +137,11 @@ body{
     position: absolute;
 
     left: 0;
-    bottom: -6px;
+    bottom: 22px;
 
-    transition: 0.3s;
+    border-radius: 999px;
+
+    transition: 0.3s ease;
 }
 
 .menu a:hover{
@@ -130,6 +150,12 @@ body{
 
 .menu a:hover::after{
     width: 100%;
+}
+
+/* ÍCONES */
+
+.menu i{
+    font-size: 20px;
 }
 
 /* ===================================================== */
@@ -498,17 +524,162 @@ main{
 }
 
 /* ===================================================== */
-/* ======================== FOOTER ===================== */
+/* ================= FOOTER PROFISSIONAL =============== */
 /* ===================================================== */
 
 footer{
-    padding: 30px;
+    margin-top: 80px;
 
-    text-align: center;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15,23,42,0.95),
+            rgba(2,6,23,1)
+        );
 
     border-top: 1px solid rgba(255,255,255,0.06);
 
-    color: #94a3b8;
+    padding: 60px 8% 25px;
+}
+
+/* CONTAINER */
+
+.footer-container{
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 50px;
+
+    flex-wrap: wrap;
+}
+
+/* TITULOS */
+
+.footer-container h3{
+    color: #38bdf8;
+
+    font-size: 22px;
+
+    margin-bottom: 22px;
+}
+
+/* TEXTO */
+
+.footer-contact p,
+.footer-links a{
+    color: #cbd5e1;
+
+    font-size: 15px;
+
+    line-height: 1.9;
+
+    text-decoration: none;
+
+    transition: 0.3s;
+}
+
+/* ICONES */
+
+.footer-contact p i{
+    color: #38bdf8;
+
+    margin-right: 10px;
+}
+
+/* LINKS */
+
+.footer-links ul{
+    list-style: none;
+}
+
+.footer-links li{
+    margin-bottom: 12px;
+}
+
+.footer-links a:hover{
+    color: #38bdf8;
+
+    padding-left: 4px;
+}
+
+/* REDES */
+
+.footer-social{
+    display: flex;
+
+    gap: 15px;
+
+    margin-top: 22px;
+}
+
+.footer-social a{
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.05);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    color: white;
+
+    text-decoration: none;
+
+    transition: 0.35s;
+}
+
+.footer-social a:hover{
+    background: #38bdf8;
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 25px rgba(56,189,248,0.35);
+}
+
+/* MAPA */
+
+.footer-map iframe{
+    width: 340px;
+    height: 220px;
+
+    border: none;
+
+    border-radius: 22px;
+
+    filter: grayscale(0.2);
+
+    transition: 0.3s;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.35);
+}
+
+.footer-map iframe:hover{
+    transform: scale(1.02);
+}
+
+/* FOOTER BOTTOM */
+
+.footer-bottom{
+    margin-top: 50px;
+
+    padding-top: 25px;
+
+    border-top: 1px solid rgba(255,255,255,0.06);
+
+    text-align: center;
+
+    color: #64748b;
+
+    font-size: 14px;
 }
 
 /* ===================================================== */
@@ -525,9 +696,13 @@ footer{
 @media(max-width: 768px){
 
     .navbar{
+        height: auto;
+
+        padding: 18px 6%;
+
         flex-direction: column;
 
-        gap: 20px;
+        gap: 18px;
     }
 
     .menu{
@@ -535,9 +710,17 @@ footer{
 
         justify-content: center;
 
-        gap: 18px;
+        gap: 22px;
     }
 
+    .menu a{
+        height: auto;
+    }
+
+    .menu a::after{
+        bottom: -6px;
+    }
+}
     .hero{
         padding-top: 60px;
     }
@@ -557,6 +740,16 @@ footer{
     .seta{
         width: 45px;
         height: 45px;
+    }
+    
+@media(max-width: 900px){
+
+    .footer-container{
+        flex-direction: column;
+    }
+
+    .footer-map iframe{
+        width: 100%;
     }
 }
 
