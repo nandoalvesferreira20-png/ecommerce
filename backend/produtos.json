@@ -36,25 +36,6 @@
     ]
   },
   {
-    "id": 1778277521840,
-    "nome": "Chuteira Futsal Nike Mercurial Vapor 16 Club",
-    "preco": "199.99",
-    "descricao": "Seja para começar ou jogar por diversão, o tênis Club leva você para o campo sem abrir mão da qualidade. A Vapor 16 foi feita pensando na velocidade. O que acontece se misturarmos essa velocidade com o toque na bola e o conforto? É bola na rede.",
-    "imagens": [
-      "http://localhost:3000/uploads/1778277521838-029393P1A2.jpg"
-    ]
-  },
-  {
-    "id": 1778292538461,
-    "nome": "Teste Marwin",
-    "preco": "300",
-    "descricao": "marwin é baitola",
-    "categoria": "camisetas",
-    "imagens": [
-      "http://localhost:3000/uploads/1778292538371-transferir (6).jfif"
-    ]
-  },
-  {
     "id": 1778296312079,
     "nome": "Camiseta Taylor Swift",
     "preco": "500",
@@ -62,16 +43,6 @@
     "categoria": "camisetas",
     "imagens": [
       "http://localhost:3000/uploads/1778296312044-image.png"
-    ]
-  },
-  {
-    "id": 1778629938391,
-    "nome": "teste",
-    "preco": "200",
-    "descricao": "teste",
-    "categoria": "camisetas",
-    "imagens": [
-      "http://localhost:3000/uploads/1778629938381-transferir (6).jfif"
     ]
   },
   {
@@ -84,16 +55,6 @@
       "http://localhost:3000/uploads/1779214674635-download (2).jpg",
       "http://localhost:3000/uploads/1779214674642-download (1).jpg",
       "http://localhost:3000/uploads/1779214674643-download.jpg"
-    ]
-  },
-  {
-    "id": 1779214903803,
-    "nome": "aaaa",
-    "preco": "222",
-    "descricao": "aaaa",
-    "categoria": "camisetas",
-    "imagens": [
-      "http://localhost:3000/uploads/1779214903800-image.png"
     ]
   }
 ]
