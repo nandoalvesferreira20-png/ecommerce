@@ -27,15 +27,6 @@
     ]
   },
   {
-    "id": 1778277433713,
-    "nome": "Camiseta Seleção Argentina",
-    "preco": "250",
-    "descricao": "Camiseta masculina da argentina",
-    "imagens": [
-      "http://localhost:3000/uploads/1778277433711-transferir (6).jfif"
-    ]
-  },
-  {
     "id": 1778296312079,
     "nome": "Camiseta Taylor Swift",
     "preco": "500",
