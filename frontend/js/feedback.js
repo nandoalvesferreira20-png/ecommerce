@@ -8,7 +8,7 @@
       try {
 
         const resposta =
-          await fetch("http://localhost:3000/feedbacks");
+          await fetch(`${API_URL}/feedbacks`);
 
         const feedbacks =
           await resposta.json();
@@ -101,7 +101,7 @@
 
           const resposta =
             await fetch(
-              "http://localhost:3000/feedbacks",
+              `${API_URL}/feedbacks`,
               {
                 method: "POST",
 

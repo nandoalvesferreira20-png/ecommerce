@@ -41,7 +41,7 @@ const campoPesquisa = document.getElementById("pesquisaProdutos");
 const btnDireita = document.getElementById("btn-direita");
 const btnEsquerda = document.getElementById("btn-esquerda");
 
-fetch("http://localhost:3000/produtos")
+fetch(`${API_URL}/produtos`)
   .then(res => res.json())
   .then(produtos => {
     listaProdutos = produtos;

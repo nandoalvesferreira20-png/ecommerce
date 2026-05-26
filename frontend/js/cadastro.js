@@ -45,8 +45,7 @@ const formCadastro =
           }
 
 
-          const resposta = await fetch(
-            "http://localhost:3000/cadastro",
+          const resposta = await fetch(`${API_URL}/usuarios`,
             {
 
               method: "POST",

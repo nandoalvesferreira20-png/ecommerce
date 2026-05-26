@@ -44,8 +44,7 @@ document
       formData.append("imagens", imagens[i]);
     }
 
-    const resposta = await fetch(
-      "http://localhost:3000/produtos",
+    const resposta = await fetch(`${API_URL}/produtos`,
       {
         method: "POST",
         body: formData
@@ -72,7 +71,7 @@ document
 async function carregarProdutos() {
 
   const resposta =
-    await fetch("http://localhost:3000/produtos");
+    await fetch(`${API_URL}/produtos`);
 
   const produtos =
     await resposta.json();
@@ -124,7 +123,7 @@ async function carregarProdutos() {
 async function excluirProduto(id) {
 
   await fetch(
-    `http://localhost:3000/produtos/${id}`,
+    `${API_URL}/produtos/${id}`,
     {
       method: "DELETE"
     }

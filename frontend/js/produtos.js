@@ -5,7 +5,7 @@
         let paginaAtual = 1;
 
         // Carregando o JSON do backend (um array simples)
-        fetch("http://localhost:3000/produtos")
+        fetch(`${API_URL}/produtos`)
             .then(res => res.json())
             .then(data => {
                 listaProdutos = data;

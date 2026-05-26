@@ -73,7 +73,7 @@
 
             const senha = document.getElementById("senha").value;
 
-            const resposta = await fetch("http://localhost:3000/login", {
+            const resposta = await fetch(`${API_URL}/login`, {
                 method: "POST",
 
                 headers: {
