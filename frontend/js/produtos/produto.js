@@ -2,7 +2,6 @@ const params = new URLSearchParams(window.location.search);
 
 const id = Number(params.get("id"));
 
-const API_URL = "http://localhost:3000";
 
 fetch(`${API_URL}/produtos`)
 

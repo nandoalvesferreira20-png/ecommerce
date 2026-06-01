@@ -24,28 +24,41 @@
     <div class="bg-effect"></div>
 
     <!-- NAVBAR -->
-    <header>
+     <header>
+  <nav class="navbar">
+    <h2 class="logo">Fut Store</h2>
 
-        <nav class="navbar">
+    <ul class="menu">
+      <li>
+        <a href="index.html">Home</a>
+      </li>
 
-            <h2 class="logo">Fut Store</h2>
+      <li>
+        <a href="Produtos.html">Produtos</a>
+      </li>
 
-            <ul class="menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="produtos.html">Produtos</a></li>
-                <li><a href="admin.html">Admin</a></li>
+      <li>
+        <a href="feedback.html">Feedbacks</a>
+      </li>
 
-                <li>
-                    <button id="toggle-theme" class="theme-btn">
-                        <i class="fa-solid fa-moon"></i>
-                    </button>
-                </li>
+      <li>
+        <a href="cadastro.html">Cadastro</a>
+      </li>
 
-            </ul>
+      <li id="areaUsuario">
+        <a href="login.html">
+          <i class="fa-solid fa-user"></i>
+        </a>
+      </li>
 
-        </nav>
-
-    </header>
+      <li>
+        <a href="/carrinho">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</header>
 
     <!-- MAIN -->
     <main>
@@ -200,6 +213,7 @@
 
 <script src="js/api.js"></script>
 <script src="js/admin/admin.js"></script>
+<script src="js/navbar.js"></script>
 
 </body>
 </html>

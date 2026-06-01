@@ -1,105 +1,164 @@
- //<!-- LOGIN GOOGLE -->//
- import { initializeApp }
-        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+// =========================
+// FIREBASE
+// =========================
 
-        import {
-            getAuth,
-            GoogleAuthProvider,
-            signInWithPopup
-        }
-        from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCfs_qRIeyKRCZpg8oJSb4qMyUgDkOBoqs",
-            authDomain: "fut-store.firebaseapp.com",
-            projectId: "fut-store",
-            storageBucket: "fut-store.firebasestorage.app",
-            messagingSenderId: "532114026795",
-            appId: "1:532114026795:web:ea97838b6642fed94a156e"
+import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// =========================
+// CONFIG FIREBASE
+// =========================
+
+const firebaseConfig = {
+
+    apiKey: "SUA_API_KEY",
+
+    authDomain: "fut-store.firebaseapp.com",
+
+    projectId: "fut-store",
+
+    storageBucket: "fut-store.firebasestorage.app",
+
+    messagingSenderId: "532114026795",
+
+    appId: "1:532114026795:web:ea97838b6642fed94a156e"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+
+const auth = getAuth(firebaseApp);
+
+const provider = new GoogleAuthProvider();
+
+// =========================
+// LOGIN GOOGLE
+// =========================
+
+const googleLogin =
+    document.getElementById("googleLogin");
+
+googleLogin.addEventListener("click", async () => {
+
+    try {
+
+        const resultado =
+            await signInWithPopup(auth, provider);
+
+        const usuario = resultado.user;
+
+        const usuarioLogado = {
+            nome: usuario.displayName,
+            email: usuario.email,
+            foto: usuario.photoURL
         };
 
-        const app = initializeApp(firebaseConfig);
+        localStorage.setItem(
+            "usuarioLogado",
+            JSON.stringify(usuarioLogado)
+        );
 
-        const auth = getAuth(app);
+        alert(`Bem-vindo ${usuario.displayName}!`);
 
-        const provider = new GoogleAuthProvider();
+        window.location.href = "index.html";
 
-        const googleLogin = document.getElementById("googleLogin");
+    } catch (erro) {
 
-        googleLogin.addEventListener("click", async () => {
+        console.log("ERRO GOOGLE:", erro);
 
-            try {
+        alert("Erro no login Google");
+    }
+});
 
-                const resultado = await signInWithPopup(auth, provider);
+// =========================
+// LOGIN NORMAL
+// =========================
 
-                const usuario = resultado.user;
+const formLogin =
+    document.getElementById("formLogin");
 
-                const usuarioLogado = {
-                    nome: usuario.displayName,
-                    email: usuario.email,
-                    foto: usuario.photoURL
-                };
+formLogin.addEventListener("submit", async (event) => {
 
-                localStorage.setItem(
-                    "usuarioLogado",
-                    JSON.stringify(usuarioLogado)
-                );
+    event.preventDefault();
 
-                alert("Login com Google realizado!");
+    const botao =
+        formLogin.querySelector("button");
 
-                window.location.href = "index.html";
+    try {
 
-            } catch (erro) {
+        botao.disabled = true;
 
-                console.log("ERRO COMPLETO:", erro);
-                console.log("CÓDIGO:", erro.code);
-                console.log("MENSAGEM:", erro.message);
+        botao.innerHTML = "Entrando...";
 
-                alert(erro.code);
-            }
+        const email = document
+            .getElementById("email")
+            .value
+            .trim();
 
-        });
+        const senha = document
+            .getElementById("senha")
+            .value;
 
-        //<!-- LOGIN NORMAL -->
-   
+        if (!email || !senha) {
 
-        const formLogin = document.getElementById("formLogin");
+            alert("Preencha todos os campos");
 
-        formLogin.addEventListener("submit", async (event) => {
+            return;
+        }
 
-            event.preventDefault();
-
-            const email = document.getElementById("email").value;
-
-            const senha = document.getElementById("senha").value;
-
-            const resposta = await fetch(`${API_URL}/login`, {
+        const resposta = await fetch(
+            "http://localhost:3000/login",
+            {
                 method: "POST",
 
                 headers: {
                     "Content-Type": "application/json"
                 },
 
+                credentials: "include",
+
                 body: JSON.stringify({
                     email,
                     senha
                 })
-            });
-
-            const dados = await resposta.json();
-
-            if (!resposta.ok) {
-                alert(dados.erro);
-                return;
             }
+        );
 
-            localStorage.setItem(
-                "usuarioLogado",
-                JSON.stringify(dados.usuario)
-            );
+        const dados = await resposta.json();
 
-            alert("Login realizado com sucesso!");
+        if (!resposta.ok) {
 
-            window.location.href = "index.html";
+            alert(dados.erro);
 
-        });
+            return;
+        }
+
+        // Salva usuário para uso na navbar e interface
+        localStorage.setItem(
+            "usuarioLogado",
+            JSON.stringify(dados.usuario)
+        );
+
+        alert("Login realizado com sucesso!");
+
+        window.location.href = "index.html";
+
+    } catch (erro) {
+
+        console.log("ERRO LOGIN:", erro);
+
+        alert("Erro no servidor");
+
+    } finally {
+
+        botao.disabled = false;
+
+        botao.innerHTML = "Entrar";
+    }
+});

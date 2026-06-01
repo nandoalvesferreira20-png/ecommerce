@@ -1,86 +1,159 @@
 const formCadastro =
-        document.getElementById("formCadastro");
+    document.getElementById("formCadastro");
 
+formCadastro.addEventListener(
+    "submit",
 
-      formCadastro.addEventListener(
-        "submit",
+    async (event) => {
 
-        async (event) => {
+        event.preventDefault();
 
-          event.preventDefault();
+        const botao =
+            formCadastro.querySelector("button");
 
+        try {
 
-          const nome =
-            document.getElementById("nome").value;
+            botao.disabled = true;
 
-          const email =
-            document.getElementById("email").value;
+            botao.innerHTML = "Cadastrando...";
 
-          const telefone =
-            document.getElementById("telefone").value;
+            const nome =
+                document
+                .getElementById("nome")
+                .value
+                .trim();
 
-          const senha =
-            document.getElementById("senha").value;
+            const email =
+                document
+                .getElementById("email")
+                .value
+                .trim();
 
-          const confirmarSenha =
-            document.getElementById("confirmarSenha").value;
+            const telefone =
+                document
+                .getElementById("telefone")
+                .value
+                .trim();
 
-          const termos =
-            document.getElementById("termos").checked;
+            const senha =
+                document
+                .getElementById("senha")
+                .value;
 
+            const confirmarSenha =
+                document
+                .getElementById("confirmarSenha")
+                .value;
 
-          if (senha !== confirmarSenha) {
+            const termos =
+                document
+                .getElementById("termos")
+                .checked;
 
-            alert("As senhas não conferem");
+            // =========================
+            // VALIDAÇÕES
+            // =========================
 
-            return;
-          }
+            if (
+                !nome ||
+                !email ||
+                !telefone ||
+                !senha ||
+                !confirmarSenha
+            ) {
 
+                alert("Preencha todos os campos");
 
-          if (!termos) {
-
-            alert("Você precisa aceitar os termos");
-
-            return;
-          }
-
-
-          const resposta = await fetch(`${API_URL}/usuarios`,
-            {
-
-              method: "POST",
-
-              headers: {
-                "Content-Type": "application/json"
-              },
-
-              body: JSON.stringify({
-
-                nome,
-                email,
-                telefone,
-                senha
-              })
+                return;
             }
-          );
 
+            if (senha.length < 6) {
 
-          const dados =
-            await resposta.json();
+                alert(
+                    "A senha precisa ter pelo menos 6 caracteres"
+                );
 
+                return;
+            }
 
-          if (!resposta.ok) {
+            if (senha !== confirmarSenha) {
 
-            alert(dados.erro);
+                alert("As senhas não conferem");
 
-            return;
-          }
+                return;
+            }
 
+            if (!termos) {
 
-          alert(dados.mensagem);
+                alert(
+                    "Você precisa aceitar os termos"
+                );
 
+                return;
+            }
 
-          window.location.href =
-            "frontend/login.html";
+            // =========================
+            // REQUISIÇÃO
+            // =========================
 
-      });
+            const resposta = await fetch(
+                "http://localhost:3000/usuarios",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    credentials: "include",
+
+                    body: JSON.stringify({
+
+                        nome,
+                        email,
+                        telefone,
+                        senha
+                    })
+                }
+            );
+
+            const dados =
+                await resposta.json();
+
+            // =========================
+            // ERRO
+            // =========================
+
+            if (!resposta.ok) {
+
+                alert(dados.erro);
+
+                return;
+            }
+
+            // =========================
+            // SUCESSO
+            // =========================
+
+            alert("Conta criada com sucesso!");
+
+            window.location.href =
+                "login.html";
+
+        } catch (erro) {
+
+            console.log(
+                "ERRO CADASTRO:",
+                erro
+            );
+
+            alert("Erro no servidor");
+
+        } finally {
+
+            botao.disabled = false;
+
+            botao.innerHTML = "Cadastrar";
+        }
+    }
+);

@@ -8,10 +8,15 @@ const jwt = require("jsonwebtoken");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://127.0.0.1:5500",
+
+    credentials: true
+
+}));
 app.use(express.json());
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // =========================
 // UPLOAD DE IMAGENS
@@ -19,7 +24,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "uploads"));
+    cb(null, path.join(__dirname, "../uploads"));
   },
 
   filename: (req, file, cb) => {
@@ -35,7 +40,7 @@ const upload = multer({ storage });
 
 app.get("/produtos", (req, res) => {
   const produtos = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "produtos.json"))
+    fs.readFileSync(path.join(__dirname, "../produtos.json"))
   );
 
   res.json(produtos);
@@ -49,7 +54,7 @@ app.post("/produtos", upload.array("imagens", 5), (req, res) => {
   }
 
   const produtos = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "produtos.json"))
+    fs.readFileSync(path.join(__dirname, "../produtos.json"))
   );
 
   const imagens = req.files.map(file => {
@@ -265,11 +270,4 @@ app.post("/feedbacks", (req, res) => {
     feedback: novoFeedback
   });
 });
-
-// =========================
-// SERVIDOR
-// =========================
-
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
-});
+module.exports = app;
