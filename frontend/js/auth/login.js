@@ -97,6 +97,7 @@
                 "usuarioLogado",
                 JSON.stringify(dados.usuario)
             );
+            localStorage.setItem("token", dados.token);
 
             alert("Login realizado com sucesso!");
 

@@ -26,6 +26,7 @@ if (usuario && areaUsuario) {
 
 function logout() {
   localStorage.removeItem("usuarioLogado");
+  localStorage.removeItem("token");
   window.location.reload();
 }
 
