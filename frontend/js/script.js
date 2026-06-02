@@ -149,3 +149,4 @@ if (btnEsquerda && containerProdutos) {
     });
   });
 }
+
