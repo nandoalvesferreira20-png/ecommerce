@@ -12,6 +12,8 @@ fetch(`${API_URL}/produtos`)
     const produto =
       produtos.find(item => item.id === id);
 
+    window.currentProduct = produto;
+
     const container =
       document.getElementById("produto");
 
@@ -143,6 +145,57 @@ fetch(`${API_URL}/produtos`)
       </div>
 
     `;
+
+    const btnCarrinho = document.querySelector(".btn-carrinho");
+
+    if (btnCarrinho && window.currentProduct) {
+      btnCarrinho.addEventListener("click", async () => {
+        const quantidadeInput = document.getElementById("quantidade");
+        const quantidade = Number(quantidadeInput?.value || 1);
+
+        const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+        const token = localStorage.getItem("token");
+
+        if (!usuario) {
+          alert("Faça login para adicionar produtos ao carrinho.");
+          window.location.href = "login.html";
+          return;
+        }
+
+        const headers = {
+          "Content-Type": "application/json"
+        };
+
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+
+        const response = await fetch(`${API_URL}/carrinho`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            produtoId: window.currentProduct.id,
+            quantidade,
+            usuarioId: usuario.id
+          })
+        });
+
+        const dados = await response.json();
+
+        if (!response.ok) {
+          alert(dados.erro || "Erro ao adicionar ao carrinho.");
+          return;
+        }
+
+        btnCarrinho.textContent = "Adicionado ao carrinho";
+        btnCarrinho.disabled = true;
+
+        setTimeout(() => {
+          btnCarrinho.textContent = "Adicionar ao carrinho";
+          btnCarrinho.disabled = false;
+        }, 1800);
+      });
+    }
 
   })
 

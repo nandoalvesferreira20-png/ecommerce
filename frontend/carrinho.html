@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Carrinho - Fut Store</title>
+
+    <link rel="stylesheet" href="css/produtos.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <style>
+        .cart-page {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .cart-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 24px 28px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .cart-top h1 {
+            margin: 6px 0 0;
+            font-size: 2.25rem;
+            color: #fff;
+        }
+
+        .cart-top p {
+            margin: 0;
+            color: rgba(255,255,255,0.72);
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .cart-panel {
+            padding: 24px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+        }
+
+        .cart-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            gap: 12px;
+            min-height: 220px;
+            border: 1px dashed rgba(255,255,255,0.22);
+            border-radius: 20px;
+            background: rgba(255,255,255,0.04);
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 16px;
+            padding: 18px;
+            border-radius: 18px;
+            background: rgba(15,23,42,0.72);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+
+        .cart-item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .cart-item-details h2 {
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+            color: #fff;
+        }
+
+        .cart-item-details p {
+            color: rgba(255,255,255,0.68);
+        }
+
+        .cart-item-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .cart-price, .cart-subtotal {
+            font-weight: 700;
+            color: #38bdf8;
+        }
+
+        .quantity-controls {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(56,189,248,0.12);
+            border: 1px solid rgba(56,189,248,0.25);
+        }
+
+        .qty-btn {
+            border: 0;
+            border-radius: 999px;
+            width: 26px;
+            height: 26px;
+            line-height: 26px;
+            text-align: center;
+            background: #0f172a;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .qty-value {
+            min-width: 24px;
+            text-align: center;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .summary-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: rgba(255,255,255,0.82);
+        }
+
+        .summary-total {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255,255,255,0.12);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 900px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-effect"></div>
+
+    <header>
+        <nav class="navbar">
+            <h2 class="logo">Fut Store</h2>
+
+            <ul class="menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="Produtos.html">Produtos</a></li>
+                <li><a href="cadastro.html">Cadastro</a></li>
+                <li><a href="login.html"><i class="fa-solid fa-user"></i></a></li>
+                <li><a href="carrinho.html" class="active"><i class="fa-solid fa-cart-shopping"></i></a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="cart-page">
+        <section class="cart-top">
+            <div>
+                <p class="eyebrow">Resumo do pedido</p>
+                <h1>Carrinho</h1>
+                <p>Revise os itens antes de finalizar sua compra.</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                <a href="Produtos.html" class="btn btn-outline-light">Continuar comprando</a>
+                <button type="button" class="btn btn-danger" id="limparCarrinho">Limpar carrinho</button>
+            </div>
+        </section>
+
+        <section class="cart-layout">
+            <article class="cart-panel">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h2 class="m-0">Itens no carrinho</h2>
+                        <p class="m-0 text-secondary">Atualize quantidades ou remova produtos.</p>
+                    </div>
+                </div>
+
+                <div id="cartItems" class="d-flex flex-column gap-3"></div>
+
+                <div id="cartEmpty" class="cart-empty d-none">
+                    <i class="fa-solid fa-cart-shopping fa-2x text-info"></i>
+                    <h3 class="m-0">Seu carrinho está vazio</h3>
+                    <p class="m-0 text-secondary">Adicione produtos e eles aparecerão aqui.</p>
+                    <a href="Produtos.html" class="btn btn-primary">Ver produtos</a>
+                </div>
+            </article>
+
+            <aside class="cart-panel" id="cartSummary">
+                <h2 class="m-0">Resumo</h2>
+                <p class="text-secondary">Confira o valor final do seu pedido.</p>
+
+                <div class="summary-list">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <strong id="subtotal">R$ 0,00</strong>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Frete</span>
+                        <strong id="frete">R$ 0,00</strong>
+                    </div>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <strong id="total">R$ 0,00</strong>
+                </div>
+
+                <button type="button" class="btn btn-primary w-100 mt-3" id="finalizarCompra">Finalizar compra</button>
+            </aside>
+        </section>
+    </main>
+
+    <footer>
+        <p>© Fut Store - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="js/api.js"></script>
+    <script src="js/carrinho/carrinho.js"></script>
+</body>
+</html>
