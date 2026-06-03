@@ -11,13 +11,87 @@ const app = express();
 
 app.use(cors({
   origin: "http://127.0.0.1:5500",
-
-    credentials: true
-
+  credentials: true
 }));
 app.use(express.json());
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+const JWT_SECRET = process.env.JWT_SECRET || "segredo_temporario";
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || "127.0.0.1",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "",
+  database: process.env.DB_NAME || "ecommerce",
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+function parseImagensField(valor) {
+  if (!valor) return [];
+  if (Array.isArray(valor)) return valor;
+
+  if (typeof valor === "string") {
+    const texto = valor.trim();
+    if (texto.startsWith("[") || texto.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(texto);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (erro) {
+        return [];
+      }
+    }
+
+    return texto.split(",").map(item => item.trim()).filter(Boolean);
+  }
+
+  return [];
+}
+
+function normalizeProduto(produto) {
+  return {
+    id: produto.id_prod,
+    nome: produto.nome_prod || produto.nome,
+    preco: Number(produto.preco),
+    descricao: produto.descricao || "",
+    imagens: parseImagensField(produto.imagens)
+  };
+}
+
+async function sincronizarProdutosDoJsonSeNecessario() {
+  const [countRows] = await pool.query("SELECT COUNT(*) AS total FROM produtos");
+
+  if (!countRows || countRows[0].total === 0) {
+    const produtosJson = JSON.parse(fs.readFileSync(path.join(__dirname, "../produtos.json"), "utf8"));
+
+    for (const produto of produtosJson) {
+      const imagensString = JSON.stringify(produto.imagens || []);
+      await pool.query(
+        "INSERT IGNORE INTO produtos (id_prod, nome_prod, preco, descricao, imagens) VALUES (?, ?, ?, ?, ?)",
+        [produto.id, produto.nome, produto.preco, produto.descricao || "", imagensString]
+      );
+    }
+  }
+}
+
+function extrairUsuarioId(req) {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    const token = authHeader.split(" ")[1];
+    try {
+      const payload = jwt.verify(token, JWT_SECRET);
+      return payload.id;
+    } catch (erro) {
+      return null;
+    }
+  }
+
+  const usuarioId = Number(req.query.usuarioId || req.body.usuarioId || req.headers["x-user-id"]);
+  return Number.isInteger(usuarioId) && usuarioId > 0 ? usuarioId : null;
+}
 
 // =========================
 // UPLOAD DE IMAGENS
@@ -39,40 +113,40 @@ const upload = multer({ storage });
 // PRODUTOS
 // =========================
 
-app.get("/produtos", (req, res) => {
-  const produtos = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "produtos.json"))
-  );
-
-  res.json(produtos);
+app.get("/produtos", async (req, res) => {
+  try {
+    await sincronizarProdutosDoJsonSeNecessario();
+    const [rows] = await pool.query("SELECT * FROM produtos");
+    res.json(rows.map(normalizeProduto));
+  } catch (erro) {
+    console.error("Erro ao carregar produtos:", erro);
+    res.status(500).json({ erro: "Erro ao carregar produtos" });
+  }
 });
 
 app.post("/produtos", upload.array("imagens", 5), async (req, res) => {
   if (!req.files || req.files.length === 0) {
-    return res.status(400).json({
-      erro: "Nenhuma imagem enviada"
-    });
+    return res.status(400).json({ erro: "Nenhuma imagem enviada" });
   }
 
-  const produtos = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "produtos.json"))
-  );
+  try {
+    const imagens = req.files.map(file => `http://localhost:3000/uploads/${file.filename}`);
+    const novoId = Date.now();
 
-  const imagens = req.files.map(file => {
-    return `http://localhost:3000/uploads/${file.filename}`;
-  });
-
-    const novoProduto = {
-      id: novoId,
-      nome: req.body.nome,
-      preco: req.body.preco,
-      descricao: req.body.descricao,
-      imagens
-    };
+    await pool.query(
+      "INSERT INTO produtos (id_prod, nome_prod, preco, descricao, imagens) VALUES (?, ?, ?, ?, ?)",
+      [novoId, req.body.nome, req.body.preco, req.body.descricao || "", JSON.stringify(imagens)]
+    );
 
     res.json({
       mensagem: "Produto salvo!",
-      produto: novoProduto
+      produto: {
+        id: novoId,
+        nome: req.body.nome,
+        preco: req.body.preco,
+        descricao: req.body.descricao,
+        imagens
+      }
     });
   } catch (erro) {
     console.error("Erro ao salvar produto:", erro);
