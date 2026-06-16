@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1778280266932,
+    "nome": "Fernando Ferreira Alves",
+    "email": "nandoalvesferreira20@gmail.com",
+    "telefone": "11965973582",
+    "senha": "Fernando20"
+  },
+  {
+    "id": 1778286840799,
+    "nome": "Vilma Costa",
+    "email": "vilmacostaf@gmail.com",
+    "telefone": "11989222704",
+    "senha": "Fernando20"
+  },
+  {
+    "id": 1778292414331,
+    "nome": "Marwin Barbosa",
+    "email": "marwintue@gmail.com",
+    "telefone": "11965464123",
+    "senha": "1234"
+  },
+  {
+    "id": 1778296131380,
+    "nome": "Giovanna Ferreira",
+    "email": "gigi.ferreira@gmail.com",
+    "telefone": "11654623139",
+    "senha": "Fernando20"
+  }
+]

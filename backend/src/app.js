@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -13,6 +15,7 @@ app.use(cors({
   origin: "http://127.0.0.1:5500",
   credentials: true
 }));
+
 app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
@@ -24,10 +27,15 @@ const pool = mysql.createPool({
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
   database: process.env.DB_NAME || "ecommerce",
+  port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
+
+// =========================
+// FUNÇÕES AUXILIARES
+// =========================
 
 function parseImagensField(valor) {
   if (!valor) return [];
@@ -35,6 +43,7 @@ function parseImagensField(valor) {
 
   if (typeof valor === "string") {
     const texto = valor.trim();
+
     if (texto.startsWith("[") || texto.startsWith("{")) {
       try {
         const parsed = JSON.parse(texto);
@@ -44,7 +53,10 @@ function parseImagensField(valor) {
       }
     }
 
-    return texto.split(",").map(item => item.trim()).filter(Boolean);
+    return texto
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean);
   }
 
   return [];
@@ -53,27 +65,12 @@ function parseImagensField(valor) {
 function normalizeProduto(produto) {
   return {
     id: produto.id_prod,
-    nome: produto.nome_prod || produto.nome,
+    nome: produto.nome_prod,
     preco: Number(produto.preco),
     descricao: produto.descricao || "",
-    imagens: parseImagensField(produto.imagens)
+    imagens: parseImagensField(produto.imagens),
+    dataCadastro: produto.data_cadastro
   };
-}
-
-async function sincronizarProdutosDoJsonSeNecessario() {
-  const [countRows] = await pool.query("SELECT COUNT(*) AS total FROM produtos");
-
-  if (!countRows || countRows[0].total === 0) {
-    const produtosJson = JSON.parse(fs.readFileSync(path.join(__dirname, "../produtos.json"), "utf8"));
-
-    for (const produto of produtosJson) {
-      const imagensString = JSON.stringify(produto.imagens || []);
-      await pool.query(
-        "INSERT IGNORE INTO produtos (id_prod, nome_prod, preco, descricao, imagens) VALUES (?, ?, ?, ?, ?)",
-        [produto.id, produto.nome, produto.preco, produto.descricao || "", imagensString]
-      );
-    }
-  }
 }
 
 function extrairUsuarioId(req) {
@@ -81,6 +78,7 @@ function extrairUsuarioId(req) {
 
   if (authHeader && authHeader.startsWith("Bearer ")) {
     const token = authHeader.split(" ")[1];
+
     try {
       const payload = jwt.verify(token, JWT_SECRET);
       return payload.id;
@@ -89,9 +87,38 @@ function extrairUsuarioId(req) {
     }
   }
 
-  const usuarioId = Number(req.query.usuarioId || req.body.usuarioId || req.headers["x-user-id"]);
-  return Number.isInteger(usuarioId) && usuarioId > 0 ? usuarioId : null;
+  const usuarioId = Number(
+    req.query.usuarioId ||
+    req.body.usuarioId ||
+    req.headers["x-user-id"]
+  );
+
+  return Number.isInteger(usuarioId) && usuarioId > 0
+    ? usuarioId
+    : null;
 }
+
+// =========================
+// TESTE DO BANCO
+// =========================
+
+app.get("/teste-banco", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT 1 AS conectado");
+
+    res.json({
+      mensagem: "Banco conectado com sucesso!",
+      resultado: rows
+    });
+  } catch (erro) {
+    console.error("Erro ao conectar no banco:", erro);
+
+    res.status(500).json({
+      erro: "Erro ao conectar no banco",
+      detalhe: erro.message
+    });
+  }
+});
 
 // =========================
 // UPLOAD DE IMAGENS
@@ -103,7 +130,8 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+    const nomeArquivo = Date.now() + "-" + file.originalname;
+    cb(null, nomeArquivo);
   }
 });
 
@@ -115,54 +143,103 @@ const upload = multer({ storage });
 
 app.get("/produtos", async (req, res) => {
   try {
-    await sincronizarProdutosDoJsonSeNecessario();
-    const [rows] = await pool.query("SELECT * FROM produtos");
+    const [rows] = await pool.query(
+      "SELECT * FROM produtos ORDER BY id_prod DESC"
+    );
+
     res.json(rows.map(normalizeProduto));
   } catch (erro) {
     console.error("Erro ao carregar produtos:", erro);
-    res.status(500).json({ erro: "Erro ao carregar produtos" });
+
+    res.status(500).json({
+      erro: "Erro ao carregar produtos"
+    });
   }
 });
 
 app.post("/produtos", upload.array("imagens", 5), async (req, res) => {
+  const { nome, preco, descricao } = req.body;
+
+  if (!nome || !preco) {
+    return res.status(400).json({
+      erro: "Nome e preço são obrigatórios"
+    });
+  }
+
   if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ erro: "Nenhuma imagem enviada" });
+    return res.status(400).json({
+      erro: "Nenhuma imagem enviada"
+    });
   }
 
   try {
-    const imagens = req.files.map(file => `http://localhost:3000/uploads/${file.filename}`);
-    const novoId = Date.now();
-
-    await pool.query(
-      "INSERT INTO produtos (id_prod, nome_prod, preco, descricao, imagens) VALUES (?, ?, ?, ?, ?)",
-      [novoId, req.body.nome, req.body.preco, req.body.descricao || "", JSON.stringify(imagens)]
+    const imagens = req.files.map(file =>
+      `http://localhost:3000/uploads/${file.filename}`
     );
 
-    res.json({
-      mensagem: "Produto salvo!",
+    const [result] = await pool.query(
+      `
+      INSERT INTO produtos 
+      (nome_prod, preco, descricao, imagens)
+      VALUES (?, ?, ?, ?)
+      `,
+      [
+        nome,
+        preco,
+        descricao || "",
+        JSON.stringify(imagens)
+      ]
+    );
+
+    res.status(201).json({
+      mensagem: "Produto salvo com sucesso!",
       produto: {
-        id: novoId,
-        nome: req.body.nome,
-        preco: req.body.preco,
-        descricao: req.body.descricao,
+        id: result.insertId,
+        nome,
+        preco: Number(preco),
+        descricao: descricao || "",
         imagens
       }
     });
   } catch (erro) {
     console.error("Erro ao salvar produto:", erro);
-    res.status(500).json({ erro: "Erro ao salvar produto" });
+
+    res.status(500).json({
+      erro: "Erro ao salvar produto"
+    });
   }
 });
 
 app.delete("/produtos/:id", async (req, res) => {
   const id = Number(req.params.id);
 
+  if (!id) {
+    return res.status(400).json({
+      erro: "ID inválido"
+    });
+  }
+
   try {
-    await pool.query("DELETE FROM produtos WHERE id_prod = ?", [id]);
-    res.json({ mensagem: "Produto excluído!" });
+    const [result] = await pool.query(
+      "DELETE FROM produtos WHERE id_prod = ?",
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        erro: "Produto não encontrado"
+      });
+    }
+
+    res.json({
+      mensagem: "Produto excluído com sucesso!"
+    });
   } catch (erro) {
     console.error("Erro ao excluir produto:", erro);
-    res.status(500).json({ erro: "Erro ao excluir produto" });
+
+    res.status(500).json({
+      erro: "Erro ao excluir produto"
+    });
   }
 });
 
@@ -194,14 +271,28 @@ app.post("/usuarios", async (req, res) => {
     const senhaCriptografada = await bcrypt.hash(senha, 10);
 
     await pool.query(
-      "INSERT INTO usuarios (nome_user, email, telefone, senha) VALUES (?, ?, ?, ?)",
-      [nome, email, telefone, senhaCriptografada]
+      `
+      INSERT INTO usuarios 
+      (nome_user, email, telefone, senha)
+      VALUES (?, ?, ?, ?)
+      `,
+      [
+        nome,
+        email,
+        telefone,
+        senhaCriptografada
+      ]
     );
 
-    res.json({ mensagem: "Usuário cadastrado com sucesso!" });
+    res.status(201).json({
+      mensagem: "Usuário cadastrado com sucesso!"
+    });
   } catch (erro) {
     console.error("Erro ao cadastrar usuário:", erro);
-    res.status(500).json({ erro: "Erro ao cadastrar usuário" });
+
+    res.status(500).json({
+      erro: "Erro ao cadastrar usuário"
+    });
   }
 });
 
@@ -232,7 +323,10 @@ app.post("/login", async (req, res) => {
       });
     }
 
-    const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+    const senhaCorreta = await bcrypt.compare(
+      senha,
+      usuario.senha
+    );
 
     if (!senhaCorreta) {
       return res.status(401).json({
@@ -263,7 +357,10 @@ app.post("/login", async (req, res) => {
     });
   } catch (erro) {
     console.error("Erro no login:", erro);
-    res.status(500).json({ erro: "Erro ao fazer login" });
+
+    res.status(500).json({
+      erro: "Erro ao fazer login"
+    });
   }
 });
 
@@ -275,15 +372,26 @@ app.get("/carrinho", async (req, res) => {
   const usuarioId = extrairUsuarioId(req);
 
   if (!usuarioId) {
-    return res.status(400).json({ erro: "Usuário não informado" });
+    return res.status(400).json({
+      erro: "Usuário não informado"
+    });
   }
 
   try {
     const [rows] = await pool.query(
-      `SELECT c.id_carrinho, c.id_produto, c.quantidade, p.nome_prod, p.preco, p.descricao, p.imagens
-       FROM carrinho c
-       JOIN produtos p ON p.id_prod = c.id_produto
-       WHERE c.id_usuario = ?`,
+      `
+      SELECT 
+        c.id_carrinho,
+        c.id_produto,
+        c.quantidade,
+        p.nome_prod,
+        p.preco,
+        p.descricao,
+        p.imagens
+      FROM carrinho c
+      JOIN produtos p ON p.id_prod = c.id_produto
+      WHERE c.id_usuario = ?
+      `,
       [usuarioId]
     );
 
@@ -300,7 +408,10 @@ app.get("/carrinho", async (req, res) => {
     res.json(itens);
   } catch (erro) {
     console.error("Erro ao buscar carrinho:", erro);
-    res.status(500).json({ erro: "Erro ao buscar carrinho" });
+
+    res.status(500).json({
+      erro: "Erro ao buscar carrinho"
+    });
   }
 });
 
@@ -309,32 +420,70 @@ app.post("/carrinho", async (req, res) => {
   const { produtoId, quantidade } = req.body;
 
   if (!usuarioId || !produtoId || !quantidade || quantidade < 1) {
-    return res.status(400).json({ erro: "Dados do carrinho inválidos" });
+    return res.status(400).json({
+      erro: "Dados do carrinho inválidos"
+    });
   }
 
   try {
+    const [produtoExiste] = await pool.query(
+      "SELECT id_prod FROM produtos WHERE id_prod = ?",
+      [produtoId]
+    );
+
+    if (produtoExiste.length === 0) {
+      return res.status(404).json({
+        erro: "Produto não encontrado"
+      });
+    }
+
     const [existing] = await pool.query(
-      "SELECT id_carrinho, quantidade FROM carrinho WHERE id_usuario = ? AND id_produto = ?",
+      `
+      SELECT id_carrinho, quantidade 
+      FROM carrinho 
+      WHERE id_usuario = ? AND id_produto = ?
+      `,
       [usuarioId, produtoId]
     );
 
     if (existing.length > 0) {
       const item = existing[0];
+
       await pool.query(
-        "UPDATE carrinho SET quantidade = ? WHERE id_carrinho = ?",
-        [item.quantidade + Number(quantidade), item.id_carrinho]
+        `
+        UPDATE carrinho 
+        SET quantidade = ? 
+        WHERE id_carrinho = ?
+        `,
+        [
+          item.quantidade + Number(quantidade),
+          item.id_carrinho
+        ]
       );
     } else {
       await pool.query(
-        "INSERT INTO carrinho (id_usuario, id_produto, quantidade) VALUES (?, ?, ?)",
-        [usuarioId, produtoId, quantidade]
+        `
+        INSERT INTO carrinho 
+        (id_usuario, id_produto, quantidade)
+        VALUES (?, ?, ?)
+        `,
+        [
+          usuarioId,
+          produtoId,
+          quantidade
+        ]
       );
     }
 
-    res.json({ mensagem: "Item adicionado ao carrinho" });
+    res.json({
+      mensagem: "Item adicionado ao carrinho"
+    });
   } catch (erro) {
     console.error("Erro ao adicionar ao carrinho:", erro);
-    res.status(500).json({ erro: "Erro ao adicionar ao carrinho" });
+
+    res.status(500).json({
+      erro: "Erro ao adicionar ao carrinho"
+    });
   }
 });
 
@@ -344,18 +493,40 @@ app.put("/carrinho/:id", async (req, res) => {
   const { quantidade } = req.body;
 
   if (!usuarioId || !idCarrinho || !quantidade || quantidade < 1) {
-    return res.status(400).json({ erro: "Dados inválidos" });
+    return res.status(400).json({
+      erro: "Dados inválidos"
+    });
   }
 
   try {
-    await pool.query(
-      "UPDATE carrinho SET quantidade = ? WHERE id_carrinho = ? AND id_usuario = ?",
-      [quantidade, idCarrinho, usuarioId]
+    const [result] = await pool.query(
+      `
+      UPDATE carrinho 
+      SET quantidade = ? 
+      WHERE id_carrinho = ? AND id_usuario = ?
+      `,
+      [
+        quantidade,
+        idCarrinho,
+        usuarioId
+      ]
     );
-    res.json({ mensagem: "Quantidade atualizada" });
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        erro: "Item não encontrado"
+      });
+    }
+
+    res.json({
+      mensagem: "Quantidade atualizada"
+    });
   } catch (erro) {
     console.error("Erro ao atualizar carrinho:", erro);
-    res.status(500).json({ erro: "Erro ao atualizar carrinho" });
+
+    res.status(500).json({
+      erro: "Erro ao atualizar carrinho"
+    });
   }
 });
 
@@ -364,18 +535,38 @@ app.delete("/carrinho/:id", async (req, res) => {
   const idCarrinho = Number(req.params.id);
 
   if (!usuarioId || !idCarrinho) {
-    return res.status(400).json({ erro: "Dados inválidos" });
+    return res.status(400).json({
+      erro: "Dados inválidos"
+    });
   }
 
   try {
-    await pool.query(
-      "DELETE FROM carrinho WHERE id_carrinho = ? AND id_usuario = ?",
-      [idCarrinho, usuarioId]
+    const [result] = await pool.query(
+      `
+      DELETE FROM carrinho 
+      WHERE id_carrinho = ? AND id_usuario = ?
+      `,
+      [
+        idCarrinho,
+        usuarioId
+      ]
     );
-    res.json({ mensagem: "Item removido do carrinho" });
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        erro: "Item não encontrado"
+      });
+    }
+
+    res.json({
+      mensagem: "Item removido do carrinho"
+    });
   } catch (erro) {
     console.error("Erro ao remover item do carrinho:", erro);
-    res.status(500).json({ erro: "Erro ao remover item do carrinho" });
+
+    res.status(500).json({
+      erro: "Erro ao remover item do carrinho"
+    });
   }
 });
 
@@ -383,31 +574,55 @@ app.delete("/carrinho", async (req, res) => {
   const usuarioId = extrairUsuarioId(req);
 
   if (!usuarioId) {
-    return res.status(400).json({ erro: "Usuário não informado" });
+    return res.status(400).json({
+      erro: "Usuário não informado"
+    });
   }
 
   try {
-    await pool.query("DELETE FROM carrinho WHERE id_usuario = ?", [usuarioId]);
-    res.json({ mensagem: "Carrinho limpo" });
+    await pool.query(
+      "DELETE FROM carrinho WHERE id_usuario = ?",
+      [usuarioId]
+    );
+
+    res.json({
+      mensagem: "Carrinho limpo"
+    });
   } catch (erro) {
     console.error("Erro ao limpar carrinho:", erro);
-    res.status(500).json({ erro: "Erro ao limpar carrinho" });
+
+    res.status(500).json({
+      erro: "Erro ao limpar carrinho"
+    });
   }
 });
 
 // =========================
 // FEEDBACKS
 // =========================
+// Por enquanto continua em JSON.
+// Depois podemos criar uma tabela feedbacks no MySQL.
 
 app.get("/feedbacks", (req, res) => {
-  const caminhoFeedbacks =
-    path.join(__dirname, "feedbacks.json");
+  try {
+    const caminhoFeedbacks = path.join(__dirname, "feedbacks.json");
 
-  const feedbacks = JSON.parse(
-    fs.readFileSync(caminhoFeedbacks)
-  );
+    if (!fs.existsSync(caminhoFeedbacks)) {
+      fs.writeFileSync(caminhoFeedbacks, JSON.stringify([], null, 2));
+    }
 
-  res.json(feedbacks);
+    const feedbacks = JSON.parse(
+      fs.readFileSync(caminhoFeedbacks, "utf8")
+    );
+
+    res.json(feedbacks);
+  } catch (erro) {
+    console.error("Erro ao buscar feedbacks:", erro);
+
+    res.status(500).json({
+      erro: "Erro ao buscar feedbacks"
+    });
+  }
 });
 
 app.post("/feedbacks", (req, res) => {
@@ -419,31 +634,66 @@ app.post("/feedbacks", (req, res) => {
     });
   }
 
-  const caminhoFeedbacks =
-    path.join(__dirname, "feedbacks.json");
+  try {
+    const caminhoFeedbacks = path.join(__dirname, "feedbacks.json");
 
-  const feedbacks = JSON.parse(
-    fs.readFileSync(caminhoFeedbacks)
-  );
+    if (!fs.existsSync(caminhoFeedbacks)) {
+      fs.writeFileSync(caminhoFeedbacks, JSON.stringify([], null, 2));
+    }
 
-  const novoFeedback = {
-    id: Date.now(),
-    nome,
-    avaliacao,
-    mensagem,
-    data: new Date().toLocaleDateString("pt-BR")
-  };
+    const feedbacks = JSON.parse(
+      fs.readFileSync(caminhoFeedbacks, "utf8")
+    );
 
-  feedbacks.push(novoFeedback);
+    const novoFeedback = {
+      id: Date.now(),
+      nome,
+      avaliacao,
+      mensagem,
+      data: new Date().toLocaleDateString("pt-BR")
+    };
 
-  fs.writeFileSync(
-    caminhoFeedbacks,
-    JSON.stringify(feedbacks, null, 2)
-  );
+    feedbacks.push(novoFeedback);
 
-  res.json({
-    mensagem: "Feedback enviado com sucesso!",
-    feedback: novoFeedback
-  });
+    fs.writeFileSync(
+      caminhoFeedbacks,
+      JSON.stringify(feedbacks, null, 2)
+    );
+
+    res.status(201).json({
+      mensagem: "Feedback enviado com sucesso!",
+      feedback: novoFeedback
+    });
+  } catch (erro) {
+    console.error("Erro ao salvar feedback:", erro);
+
+    res.status(500).json({
+      erro: "Erro ao salvar feedback"
+    });
+  }
 });
+
+app.get("/usuarios", async (req, res) => {
+  try {
+    const [usuarios] = await pool.query(`
+      SELECT
+        id_usuarios,
+        nome_user,
+        email,
+        telefone,
+        data_cadastro_user
+      FROM usuarios
+    `);
+
+    res.json(usuarios);
+
+  } catch (erro) {
+    console.error(erro);
+
+    res.status(500).json({
+      erro: "Erro ao buscar usuários"
+    });
+  }
+});
+
 module.exports = app;
