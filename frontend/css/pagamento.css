@@ -1,0 +1,327 @@
+/* Configurações Gerais e Paleta de Cores (Dark Mode da Fut Store) */
+:root {
+    --bg-dark: #090d14;       /* Azul escuro de fundo das imagens */
+    --bg-card: #111723;       /* Fundo dos blocos/inputs */
+    --accent-cyan: #00a8ff;   /* Azul ciano vibrante do logo */
+    --text-main: #ffffff;     /* Branco para textos principais */
+    --text-muted: #8b9bb4;    /* Cinza azulado para subtítulos */
+    --border-color: #1f293d;  /* Bordas sutis */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header do Checkout */
+.checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    border-bottom: 1px solid var(--border-color);
+    background-color: rgba(9, 13, 20, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent-cyan);
+}
+
+.logo span {
+    color: var(--text-main);
+}
+
+.secure-badge {
+    color: #2ed573;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Container Principal */
+.checkout-container {
+    max-width: 1200px;
+    width: 90%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 30px;
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .checkout-container {
+        grid-template-columns: 1fr;
+    }
+    .summary-section {
+        order: -1; /* Resumo fica no topo no mobile */
+    }
+}
+
+/* Blocos de conteúdo */
+.payment-section, .summary-section {
+    background-color: var(--bg-card);
+    border-radius: 12px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+}
+
+h2, h3 {
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* Abas de Alternância (Cartão / Pix) */
+.payment-tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.tab-btn {
+    flex: 1;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.tab-btn:hover {
+    border-color: var(--accent-cyan);
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    background-color: var(--accent-cyan);
+    border-color: var(--accent-cyan);
+    color: #000000;
+}
+
+/* Conteúdo das Abas */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Formulários e Inputs */
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+input, select {
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 5px rgba(0, 168, 255, 0.3);
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Botão de Pagamento Principal */
+.btn-pay {
+    background-color: var(--accent-cyan);
+    color: #000000;
+    border: none;
+    width: 100%;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    margin-top: 10px;
+}
+
+.btn-pay:hover {
+    background-color: #008cd4;
+}
+
+.btn-pay:active {
+    transform: scale(0.98);
+}
+
+/* Seção de Resumo Lateral */
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.product-thumb {
+    width: 50px;
+    height: 50px;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-cyan);
+    font-size: 20px;
+}
+
+.product-info h4 {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.product-info p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border-color);
+    margin: 20px 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.free-shipping {
+    color: #2ed573;
+    font-weight: bold;
+}
+
+.summary-row.total {
+    color: var(--text-main);
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Interface Pix Dinâmica */
+.hidden {
+    display: none !important;
+}
+
+.pix-info {
+    text-align: center;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.pix-qr-area {
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.qr-code-placeholder {
+    width: 180px;
+    height: 180px;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 100px;
+    padding: 10px;
+}
+
+.pix-timer {
+    font-size: 13px;
+    color: #ff4757;
+}
+
+.copy-paste-container {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.copy-paste-container input {
+    flex: 1;
+    font-size: 13px;
+}
+
+.copy-paste-container button {
+    background-color: var(--border-color);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 0 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.copy-paste-container button:hover {
+    background-color: var(--accent-cyan);
+    color: #000000;
+}
+
+/* Rodapé */
+.checkout-footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}

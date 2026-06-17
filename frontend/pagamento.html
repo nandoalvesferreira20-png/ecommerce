@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fut Store - Checkout Seguro</title>
+ <link rel="stylesheet" href="css/pagamento.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="checkout-header">
+        <div class="logo">Fut <span>Store</span></div>
+        <div class="secure-badge"><i class="fas fa-lock"></i> Ambiente 100% Seguro</div>
+    </header>
+
+    <main class="checkout-container">
+        <section class="payment-section">
+            <h2>Como deseja pagar?</h2>
+            
+            <div class="payment-tabs">
+                <button class="tab-btn active" onclick="switchTab('cartao')">
+                    <i class="far fa-credit-card"></i> Cartão de Crédito
+                </button>
+                <button class="tab-btn" onclick="switchTab('pix')">
+                    <i class="fa-brands fa-pix"></i> Pix (Aprovação Imediata)
+                </button>
+            </div>
+
+            <div id="form-cartao" class="tab-content active">
+                <form id="credit-card-form" onsubmit="processarPagamento(event)">
+                    <div class="input-group">
+                        <label for="card-number">Número do Cartão</label>
+                        <input type="text" id="card-number" placeholder="0000 0000 0000 0000" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="card-name">Nome impresso no cartão</label>
+                        <input type="text" id="card-name" placeholder="JOÃO S SILVA" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-group">
+                            <label for="card-expiry">Validade</label>
+                            <input type="text" id="card-expiry" placeholder="MM/AA" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="card-cvv">CVV</label>
+                            <input type="text" id="card-cvv" placeholder="123" maxlength="4" required>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="installments">Parcelas</label>
+                        <select id="installments">
+                            <option value="1">1x de R$ 299,90 sem juros</option>
+                            <option value="2">2x de R$ 149,95 sem juros</option>
+                            <option value="3">3x de R$ 99,96 sem juros</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-pay">Finalizar Compra</button>
+                </form>
+            </div>
+
+            <div id="form-pix" class="tab-content">
+                <div class="pix-info">
+                    <p>Clique no botão abaixo para gerar o código Pix. Você poderá escanear o QR Code ou copiar a chave "Copia e Cola".</p>
+                    <button class="btn-pay" onclick="gerarPix()">Gerar Código Pix</button>
+                    
+                    <div id="pix-qr-area" class="pix-qr-area hidden">
+                        <div class="qr-code-placeholder">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <p class="pix-timer">O código expira em 15 minutos.</p>
+                        
+                        <div class="copy-paste-container">
+                            <input type="text" id="pix-code" value="00020101021226870014br.gov.bcb.pix2565futstoreapi..." readonly>
+                            <button onclick="copiarPix()" id="btn-copiar">Copiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <aside class="summary-section">
+            <h3>Resumo do Pedido</h3>
+            
+            <div class="product-item">
+                <div class="product-info">
+                    <div class="product-thumb"><i class="fas fa-tshirt"></i></div>
+                    <div>
+                        <h4>Camisa Oficial Brasil 2026</h4>
+                        <p>Tamanho: G</p>
+                    </div>
+                </div>
+                <span class="price">R$ 299,90</span>
+            </div>
+
+            <hr class="divider">
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>R$ 299,90</span>
+            </div>
+            <div class="summary-row">
+                <span>Frete</span>
+                <span class="free-shipping">Grátis</span>
+            </div>
+            
+            <hr class="divider">
+            
+            <div class="summary-row total">
+                <span>Total</span>
+                <span>R$ 299,90</span>
+            </div>
+        </aside>
+    </main>
+
+    <footer class="checkout-footer">
+        <p>© 2026 Fut Store - Todos os direitos reservados</p>
+        <p>Rua Abílio Soares, 386 - Paraíso, São Paulo/SP</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
