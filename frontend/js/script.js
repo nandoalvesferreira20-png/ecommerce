@@ -150,3 +150,54 @@ if (btnEsquerda && containerProdutos) {
   });
 }
 
+// Alternância entre as abas Cartão e Pix
+function switchTab(method) {
+    // Esconde todos os conteúdos e remove classe ativa dos botões
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+    // Ativa o conteúdo e botão selecionados
+    if (method === 'cartao') {
+        document.getElementById('form-cartao').classList.add('active');
+        event.currentTarget.classList.add('active');
+    } else if (method === 'pix') {
+        document.getElementById('form-pix').classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+}
+
+// Simulação de comportamento ao clicar em "Gerar Código Pix"
+function gerarPix() {
+    const qrArea = document.getElementById('pix-qr-area');
+    qrArea.classList.remove('hidden');
+}
+
+// Função para copiar o código Pix fictício "Copia e Cola"
+function copiarPix() {
+    const pixInput = document.getElementById('pix-code');
+    const btnCopiar = document.getElementById('btn-copiar');
+    
+    // Seleciona e copia o texto
+    pixInput.select();
+    pixInput.setSelectionRange(0, 99999); // Para mobile
+    navigator.clipboard.writeText(pixInput.value);
+    
+    // Altera o visual do botão temporariamente para dar feedback de sucesso
+    btnCopiar.innerText = "Copiado!";
+    btnCopiar.style.backgroundColor = "#2ed573";
+    btnCopiar.style.color = "#ffffff";
+    
+    setTimeout(() => {
+        btnCopiar.innerText = "Copiar";
+        btnCopiar.style.backgroundColor = "";
+        btnCopiar.style.color = "";
+    }, 2000);
+}
+
+// Evento disparado ao enviar os dados do cartão de crédito
+function processarPagamento(event) {
+    event.preventDefault(); // Impede a página de recarregar
+    
+    // Aqui no futuro vocês vão conectar à API do Gateway (Mercado Pago, Stripe, etc)
+    alert("Dados capturados com sucesso! Enviando para processamento seguro...");
+}
