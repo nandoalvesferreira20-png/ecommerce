@@ -1,0 +1,30 @@
+# Dependências
+node_modules/
+
+# Arquivos de ambiente
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Uploads temporários
+uploads/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/
+
+# Build
+dist/
+build/
+
+# Cache
+.cache/
+
+# Vercel
+.vercel/
