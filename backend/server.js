@@ -3,12 +3,9 @@ const cors = require("cors");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
-<<<<<<< HEAD
-=======
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mysql = require("mysql2/promise");
->>>>>>> aac8d9148fd14ec61a2f46796d083ce061fe8c32
 
 const app = express();
 
@@ -17,20 +14,10 @@ app.use(express.json());
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-<<<<<<< HEAD
 // =========================
-// UPLOAD DE IMAGENS
+// CONFIGURAÇÕES
 // =========================
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "uploads"));
-  },
-
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-=======
 const JWT_SECRET = process.env.JWT_SECRET || "segredo_temporario";
 
 const pool = mysql.createPool({
@@ -110,189 +97,21 @@ function extrairUsuarioId(req) {
   return Number.isInteger(usuarioId) && usuarioId > 0 ? usuarioId : null;
 }
 
+// =========================
+// UPLOAD DE IMAGENS
+// =========================
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, "uploads")),
   filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
->>>>>>> aac8d9148fd14ec61a2f46796d083ce061fe8c32
 });
 
 const upload = multer({ storage });
 
-<<<<<<< HEAD
 // =========================
 // PRODUTOS
 // =========================
 
-app.get("/produtos", (req, res) => {
-  const produtos = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "produtos.json"))
-  );
-
-  res.json(produtos);
-});
-
-app.post("/produtos", upload.array("imagens", 5), (req, res) => {
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({
-      erro: "Nenhuma imagem enviada"
-    });
-  }
-
-  const produtos = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "produtos.json"))
-  );
-
-  const imagens = req.files.map(file => {
-    return `http://localhost:3000/uploads/${file.filename}`;
-  });
-
-  const novoProduto = {
-    id: Date.now(),
-    nome: req.body.nome,
-    preco: req.body.preco,
-    descricao: req.body.descricao,
-    categoria: req.body.categoria,
-    imagens: imagens
-  };
-
-  produtos.push(novoProduto);
-
-  fs.writeFileSync(
-    path.join(__dirname, "produtos.json"),
-    JSON.stringify(produtos, null, 2)
-  );
-
-  res.json({
-    mensagem: "Produto salvo!",
-    produto: novoProduto
-  });
-});
-
-app.delete("/produtos/:id", (req, res) => {
-  const id = Number(req.params.id);
-
-  const produtos = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "produtos.json"))
-  );
-
-  const produtosAtualizados =
-    produtos.filter(produto => produto.id !== id);
-
-  fs.writeFileSync(
-    path.join(__dirname, "produtos.json"),
-    JSON.stringify(produtosAtualizados, null, 2)
-  );
-
-  res.json({
-    mensagem: "Produto excluído!"
-  });
-});
-
-// =========================
-// CADASTRO
-// =========================
-
-app.post("/cadastro", (req, res) => {
-  const { nome, email, telefone, senha } = req.body;
-
-  if (!nome || !email || !telefone || !senha) {
-    return res.status(400).json({
-      erro: "Preencha todos os campos"
-    });
-  }
-
-  const caminhoUsuarios =
-    path.join(__dirname, "usuarios.json");
-
-  const usuarios = JSON.parse(
-    fs.readFileSync(caminhoUsuarios)
-  );
-
-  const usuarioExiste = usuarios.find(
-    usuario => usuario.email === email
-  );
-
-  if (usuarioExiste) {
-    return res.status(400).json({
-      erro: "E-mail já cadastrado"
-    });
-  }
-
-  const novoUsuario = {
-    id: Date.now(),
-    nome,
-    email,
-    telefone,
-    senha
-  };
-
-  usuarios.push(novoUsuario);
-
-  fs.writeFileSync(
-    caminhoUsuarios,
-    JSON.stringify(usuarios, null, 2)
-  );
-
-  res.json({
-    mensagem: "Usuário cadastrado com sucesso!"
-  });
-});
-
-// =========================
-// LOGIN
-// =========================
-
-app.post("/login", (req, res) => {
-  const { email, senha } = req.body;
-
-  if (!email || !senha) {
-    return res.status(400).json({
-      erro: "Preencha e-mail e senha"
-    });
-  }
-
-  const caminhoUsuarios =
-    path.join(__dirname, "usuarios.json");
-
-  const usuarios = JSON.parse(
-    fs.readFileSync(caminhoUsuarios)
-  );
-
-  const usuario = usuarios.find(
-    usuario => usuario.email === email && usuario.senha === senha
-  );
-
-  if (!usuario) {
-    return res.status(401).json({
-      erro: "E-mail ou senha inválidos"
-    });
-  }
-
-  res.json({
-    mensagem: "Login realizado com sucesso!",
-    usuario: {
-      id: usuario.id,
-      nome: usuario.nome,
-      email: usuario.email,
-      telefone: usuario.telefone
-    }
-  });
-});
-
-// =========================
-// FEEDBACKS
-// =========================
-
-app.get("/feedbacks", (req, res) => {
-  const caminhoFeedbacks =
-    path.join(__dirname, "feedbacks.json");
-
-  const feedbacks = JSON.parse(
-    fs.readFileSync(caminhoFeedbacks)
-  );
-
-  res.json(feedbacks);
-=======
 app.get("/produtos", async (req, res) => {
   try {
     await sincronizarProdutosDoJsonSeNecessario();
@@ -345,6 +164,10 @@ app.delete("/produtos/:id", async (req, res) => {
     res.status(500).json({ erro: "Erro ao excluir produto" });
   }
 });
+
+// =========================
+// CADASTRO E LOGIN
+// =========================
 
 app.post("/usuarios", async (req, res) => {
   const { nome, email, telefone, senha } = req.body;
@@ -410,6 +233,10 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ erro: "Erro ao fazer login" });
   }
 });
+
+// =========================
+// CARRINHO
+// =========================
 
 app.get("/carrinho", async (req, res) => {
   const usuarioId = extrairUsuarioId(req);
@@ -509,58 +336,17 @@ app.delete("/carrinho", async (req, res) => {
   }
 });
 
+// =========================
+// FEEDBACKS
+// =========================
+
 app.get("/feedbacks", (req, res) => {
   const caminhoFeedbacks = path.join(__dirname, "feedbacks.json");
   res.json(JSON.parse(fs.readFileSync(caminhoFeedbacks, "utf8")));
->>>>>>> aac8d9148fd14ec61a2f46796d083ce061fe8c32
 });
 
 app.post("/feedbacks", (req, res) => {
   const { nome, avaliacao, mensagem } = req.body;
-<<<<<<< HEAD
-
-  if (!nome || !avaliacao || !mensagem) {
-    return res.status(400).json({
-      erro: "Preencha todos os campos"
-    });
-  }
-
-  const caminhoFeedbacks =
-    path.join(__dirname, "feedbacks.json");
-
-  const feedbacks = JSON.parse(
-    fs.readFileSync(caminhoFeedbacks)
-  );
-
-  const novoFeedback = {
-    id: Date.now(),
-    nome,
-    avaliacao,
-    mensagem,
-    data: new Date().toLocaleDateString("pt-BR")
-  };
-
-  feedbacks.push(novoFeedback);
-
-  fs.writeFileSync(
-    caminhoFeedbacks,
-    JSON.stringify(feedbacks, null, 2)
-  );
-
-  res.json({
-    mensagem: "Feedback enviado com sucesso!",
-    feedback: novoFeedback
-  });
-});
-
-// =========================
-// SERVIDOR
-// =========================
-
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
-});
-=======
   if (!nome || !avaliacao || !mensagem) return res.status(400).json({ erro: "Preencha todos os campos" });
 
   const caminhoFeedbacks = path.join(__dirname, "feedbacks.json");
@@ -573,7 +359,10 @@ app.listen(3000, () => {
   res.json({ mensagem: "Feedback enviado com sucesso!", feedback: novoFeedback });
 });
 
+// =========================
+// SERVIDOR
+// =========================
+
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
 });
->>>>>>> aac8d9148fd14ec61a2f46796d083ce061fe8c32
