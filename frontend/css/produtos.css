@@ -663,3 +663,51 @@ body.light-mode footer{
 .produto-card button {
     padding: 8px 12px;
 }
+
+/* Container da paginação */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 50px 0;
+}
+
+/* Remove bordas dos itens */
+.page-item {
+    list-style: none;
+}
+
+/* Botões */
+.page-link {
+    border: none !important;
+    border-radius: 12px !important;
+    background: #1f2937 !important;
+    color: #fff !important;
+    padding: 12px 18px !important;
+    font-weight: 600;
+    transition: .3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,.25);
+}
+
+/* Hover */
+.page-link:hover {
+    background: #2563eb !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+}
+
+/* Página atual */
+.page-item.active .page-link {
+    background: linear-gradient(135deg,#2563eb,#3b82f6) !important;
+    color: #fff !important;
+    box-shadow: 0 0 15px rgba(37,99,235,.5);
+}
+
+/* Desabilitado */
+.page-item.disabled .page-link {
+    background: #374151 !important;
+    color: #9ca3af !important;
+    cursor: not-allowed;
+    opacity: .6;
+}
