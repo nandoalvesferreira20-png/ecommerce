@@ -363,6 +363,116 @@ app.post("/feedbacks", (req, res) => {
 });
 
 // =========================
+// CARTÕES
+// =========================
+
+// Middleware para verificar token
+function verificarToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ erro: "Token não fornecido" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    req.userId = payload.id;
+    next();
+  } catch (erro) {
+    res.status(401).json({ erro: "Token inválido" });
+  }
+}
+
+// POST - Cadastrar cartão
+app.post("/cartoes", verificarToken, async (req, res) => {
+  const { nomeC, ndcartoes, validade, cv } = req.body;
+  const idUsuarios = req.userId;
+
+  if (!nomeC || !ndcartoes || !validade || !cv) {
+    return res.status(400).json({ erro: "Preencha todos os campos" });
+  }
+
+  try {
+    // Validar número do cartão
+    if (ndcartoes.length !== 16 || !/^\d+$/.test(ndcartoes)) {
+      return res.status(400).json({ erro: "Número do cartão inválido" });
+    }
+
+    // Validar validade
+    if (!/^\d{2}\/\d{2}$/.test(validade)) {
+      return res.status(400).json({ erro: "Validade inválida (use MM/YY)" });
+    }
+
+    // Validar CVV
+    if (!/^\d{3,4}$/.test(cv)) {
+      return res.status(400).json({ erro: "CVV inválido" });
+    }
+
+    await pool.query(
+      `INSERT INTO cartoes (id_usuarios, ndcartoes, cv, validade, nomeC, data_d_cadastro_card)
+       VALUES (?, ?, ?, ?, ?, NOW())`,
+      [idUsuarios, ndcartoes, cv, validade, nomeC]
+    );
+
+    res.status(201).json({ mensagem: "Cartão cadastrado com sucesso!" });
+  } catch (erro) {
+    console.error("Erro ao cadastrar cartão:", erro);
+    res.status(500).json({ erro: "Erro ao cadastrar cartão" });
+  }
+});
+
+// GET - Listar cartões do usuário
+app.get("/cartoes", verificarToken, async (req, res) => {
+  const idUsuarios = req.userId;
+
+  try {
+    const [rows] = await pool.query(
+      `SELECT id_cartao, ndcartoes, validade, nomeC, data_d_cadastro_card 
+       FROM cartoes WHERE id_usuarios = ? ORDER BY data_d_cadastro_card DESC`,
+      [idUsuarios]
+    );
+
+    // Mascarar número do cartão (mostrar apenas últimos 4 dígitos)
+    const cartoesMascarados = rows.map(cartao => ({
+      ...cartao,
+      ndcartoes: "****-****-****-" + cartao.ndcartoes.slice(-4)
+    }));
+
+    res.json(cartoesMascarados);
+  } catch (erro) {
+    console.error("Erro ao listar cartões:", erro);
+    res.status(500).json({ erro: "Erro ao listar cartões" });
+  }
+});
+
+// DELETE - Deletar cartão
+app.delete("/cartoes/:id", verificarToken, async (req, res) => {
+  const { id } = req.params;
+  const idUsuarios = req.userId;
+
+  try {
+    // Verificar se o cartão pertence ao usuário
+    const [cartoes] = await pool.query(
+      `SELECT id_cartao FROM cartoes WHERE id_cartao = ? AND id_usuarios = ?`,
+      [id, idUsuarios]
+    );
+
+    if (cartoes.length === 0) {
+      return res.status(404).json({ erro: "Cartão não encontrado" });
+    }
+
+    await pool.query(`DELETE FROM cartoes WHERE id_cartao = ?`, [id]);
+
+    res.json({ mensagem: "Cartão deletado com sucesso!" });
+  } catch (erro) {
+    console.error("Erro ao deletar cartão:", erro);
+    res.status(500).json({ erro: "Erro ao deletar cartão" });
+  }
+});
+
+// =========================
 // SERVIDOR
 // =========================
 
