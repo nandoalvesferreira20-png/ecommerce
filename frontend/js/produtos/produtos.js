@@ -73,11 +73,9 @@
             // Botão "Anterior"
             html += `
                 <li class="page-item ${paginaAtual === 1 ? "disabled" : ""}">
-                    <button class="page-link" onclick="carregarPagina(${paginaAtual - 1})">Anterior</button>
-                </li>
+                    <button class="page-link" onclick="carregarPagina(${paginaAtual - 1})">←
+                    </button>
             `;
-
-            // Botões numerados
             for (let i = 1; i <= totalPaginas; i++) {
                 html += `
                     <li class="page-item ${i === paginaAtual ? "active" : ""}">
@@ -89,7 +87,7 @@
             // Botão "Próxima"
             html += `
                 <li class="page-item ${paginaAtual === totalPaginas ? "disabled" : ""}">
-                    <button class="page-link" onclick="carregarPagina(${paginaAtual + 1})">Próxima</button>
+                    <button class="page-link" onclick="carregarPagina(${paginaAtual + 1})">→</button>
                 </li>
             `;
 
