@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cartão - Fut Store</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/cadastro.css">
+
+    <!-- ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <!-- BACKGROUND -->
+    <div class="bg-effect"></div>
+
+    <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <h2 class="logo">Fut Store</h2>
+
+            <ul class="menu">
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+
+                <li>
+                    <a href="Produtos.html">Produtos</a>
+                </li>
+
+                <li>
+                    <a href="feedback.html">Feedbacks</a>
+                </li>
+
+                <li>
+                    <a href="cadastro.html">Cadastro</a>
+                </li>
+
+                <li id="areaUsuario">
+                    <a href="login.html">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/carrinho">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+        <!-- LEFT -->
+        <section class="banner-area">
+            <div class="banner-content">
+                <span class="badge">Adicione seu cartão</span>
+                <h1>Cadastro de Cartão</h1>
+                <p>Insira os dados do seu cartão para realizar pagamentos</p>
+            </div>
+        </section>
+
+        <!-- RIGHT -->
+        <section class="form-area">
+            <!-- CARTÃO PREVIEW -->
+            <div class="card-container">
+                <div class="card-preview">
+                    <div class="card-chip">
+                        <div class="chip"></div>
+                    </div>
+
+                    <div class="card-number">
+                        <span id="previewNumber">0000 0000 0000 0000</span>
+                    </div>
+
+                    <div class="card-footer">
+                        <div>
+                            <p class="label">Titular</p>
+                            <p id="previewName">SEU NOME</p>
+                        </div>
+
+                        <div>
+                            <p class="label">Validade</p>
+                            <p id="previewValidity">MM/YY</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FORMULÁRIO -->
+                <form id="formCartao">
+                <!-- Nome do Titular -->
+                <div class="form-group">
+                    <label for="nomeC">Nome do Titular</label>
+                    <input type="text" id="nomeC" placeholder="Ex: João Silva" required>
+                </div>
+
+                <!-- Número do Cartão -->
+                <div class="form-group">
+                    <label for="ndcartoes">Número do Cartão</label>
+                    <input type="text" id="ndcartoes" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                </div>
+
+                <!-- Validade -->
+                <div class="form-group">
+                    <label for="validade">Validade (MM/YY)</label>
+                    <input type="text" id="validade" placeholder="MM/YY" maxlength="5" required>
+                </div>
+
+                <!-- CVV -->
+                <div class="form-group">
+                    <label for="cv">CVV</label>
+                    <input type="text" id="cv" placeholder="000" maxlength="4" required>
+                </div>
+
+                <!-- Botão Cadastrar -->
+                <button type="submit" class="btn-submit">Cadastrar Cartão</button>
+            </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- SCRIPT -->
+    <script src="js/auth/cadcard.js"></script>
+</body>
+
+</html>

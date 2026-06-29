@@ -19,7 +19,7 @@ formCadastro.addEventListener(
 
             const nome =
                 document
-                .getElementById("nome")
+                .getElementById("nome_user")
                 .value
                 .trim();
 
@@ -104,8 +104,6 @@ formCadastro.addEventListener(
                     headers: {
                         "Content-Type": "application/json"
                     },
-
-                    credentials: "include",
 
                     body: JSON.stringify({
 
