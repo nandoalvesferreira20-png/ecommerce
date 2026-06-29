@@ -3,6 +3,8 @@ const params = new URLSearchParams(window.location.search);
 const id = Number(params.get("id"));
 
 
+
+
 fetch(`${API_URL}/produtos`)
 
   .then(res => res.json())
@@ -79,10 +81,10 @@ fetch(`${API_URL}/produtos`)
             <h3>Tamanho</h3>
 
             <div class="opcoes-tamanho">
-              <button>P</button>
-              <button>M</button>
-              <button>G</button>
-              <button>GG</button>
+                <button type="button" class="btn-tamanho" data-tamanho="P">P</button>
+                <button type="button" class="btn-tamanho" data-tamanho="M">M</button>
+                <button type="button" class="btn-tamanho" data-tamanho="G">G</button>
+                <button type="button" class="btn-tamanho" data-tamanho="GG">GG</button>
             </div>
 
           </div>
@@ -146,6 +148,19 @@ fetch(`${API_URL}/produtos`)
 
     `;
 
+    let tamanhoSelecionado = null;
+
+document.querySelectorAll(".btn-tamanho").forEach(botao => {
+  botao.addEventListener("click", () => {
+    document.querySelectorAll(".btn-tamanho").forEach(btn => {
+      btn.classList.remove("ativo");
+    });
+
+    botao.classList.add("ativo");
+    tamanhoSelecionado = botao.dataset.tamanho;
+  });
+});
+
     const btnCarrinho = document.querySelector(".btn-carrinho");
 
     if (btnCarrinho && window.currentProduct) {
@@ -169,6 +184,10 @@ fetch(`${API_URL}/produtos`)
         if (token) {
           headers.Authorization = `Bearer ${token}`;
         }
+        if (!tamanhoSelecionado) {
+          alert("Selecione um tamanho antes de adicionar ao carrinho.");
+          return;
+        }
 
         const response = await fetch(`${API_URL}/carrinho`, {
           method: "POST",
@@ -176,8 +195,9 @@ fetch(`${API_URL}/produtos`)
           body: JSON.stringify({
             produtoId: window.currentProduct.id,
             quantidade,
+            tamanho: tamanhoSelecionado,
             usuarioId: usuario.id
-          })
+        })
         });
 
         const dados = await response.json();

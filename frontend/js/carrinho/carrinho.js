@@ -63,7 +63,10 @@ function mostraUsuarioInvalido() {
 }
 
 function atualizarResumo(itens) {
-  const subtotal = itens.reduce((total, item) => total + Number(item.preco || 0) * Number(item.quantidade || 0), 0);
+  const subtotal = itens.reduce((total, item) => {
+    return total + Number(item.preco || 0) * Number(item.quantidade || 0);
+  }, 0);
+
   const frete = subtotal > 0 ? 0 : 0;
   const total = subtotal + frete;
 
@@ -91,25 +94,44 @@ async function renderizarCarrinho() {
 
     const cartItem = document.createElement("article");
     cartItem.className = "cart-item";
+
     cartItem.innerHTML = `
       <div class="cart-item-image">
-        <img src="${item.imagens?.[0] || "https://via.placeholder.com/300x300?text=Produto"}" alt="${item.nome}" loading="lazy">
+        <img 
+          src="${item.imagens?.[0] || "https://via.placeholder.com/300x300?text=Produto"}" 
+          alt="${item.nome}" 
+          loading="lazy"
+        >
       </div>
 
       <div class="cart-item-details">
         <div class="d-flex justify-content-between align-items-start gap-3">
           <div>
             <h2>${item.nome}</h2>
-            <p class="mb-0 text-secondary">${item.descricao || "Produto sem descrição"}</p>
+
+            <p class="mb-0 text-secondary">
+              ${item.descricao || "Produto sem descrição"}
+            </p>
+
+            <p class="mb-0 text-secondary">
+              <strong>Tamanho:</strong> ${item.tamanho || "Não informado"}
+            </p>
           </div>
 
-          <button type="button" class="btn btn-sm btn-outline-light remove-item" data-id="${item.id}" aria-label="Remover ${item.nome}">
+          <button 
+            type="button" 
+            class="btn btn-sm btn-outline-light remove-item" 
+            data-id="${item.id}" 
+            aria-label="Remover ${item.nome}"
+          >
             <i class="fa-solid fa-trash"></i>
           </button>
         </div>
 
         <div class="cart-item-footer">
-          <div class="cart-price">${formatarMoeda(Number(item.preco || 0))}</div>
+          <div class="cart-price">
+            ${formatarMoeda(Number(item.preco || 0))}
+          </div>
 
           <div class="quantity-controls" aria-label="Controle de quantidade">
             <button type="button" class="qty-btn decrement" data-id="${item.id}">-</button>
@@ -117,7 +139,9 @@ async function renderizarCarrinho() {
             <button type="button" class="qty-btn increment" data-id="${item.id}">+</button>
           </div>
 
-          <div class="cart-subtotal">${formatarMoeda(subtotalItem)}</div>
+          <div class="cart-subtotal">
+            ${formatarMoeda(subtotalItem)}
+          </div>
         </div>
       </div>
     `;
@@ -155,12 +179,17 @@ cartItems.addEventListener("click", async (event) => {
     const itemRow = event.target.closest(".cart-item");
     const quantidadeSpan = itemRow?.querySelector(".qty-value");
     const quantidadeAtual = Number(quantidadeSpan?.textContent || 1);
-    const novaQuantidade = decrementButton ? Math.max(1, quantidadeAtual - 1) : quantidadeAtual + 1;
+    const novaQuantidade = decrementButton
+      ? Math.max(1, quantidadeAtual - 1)
+      : quantidadeAtual + 1;
 
     await fetch(`${API_URL}/carrinho/${id}`, {
       method: "PUT",
       headers: buildHeaders(),
-      body: JSON.stringify({ quantidade: novaQuantidade, usuarioId })
+      body: JSON.stringify({
+        quantidade: novaQuantidade,
+        usuarioId
+      })
     });
   }
 
@@ -190,10 +219,12 @@ finalizarCompraButton.addEventListener("click", async () => {
   }
 
   alert("Pedido finalizado com sucesso!");
+
   await fetch(`${API_URL}/carrinho?usuarioId=${usuario.id}`, {
     method: "DELETE",
     headers: buildHeaders()
   });
+
   renderizarCarrinho();
 });
 

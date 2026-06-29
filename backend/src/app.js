@@ -417,9 +417,9 @@ app.get("/carrinho", async (req, res) => {
 
 app.post("/carrinho", async (req, res) => {
   const usuarioId = extrairUsuarioId(req);
-  const { produtoId, quantidade } = req.body;
+  const { produtoId, quantidade, tamanho } = req.body;
 
-  if (!usuarioId || !produtoId || !quantidade || quantidade < 1) {
+  if (!usuarioId || !produtoId || !quantidade || quantidade < 1 || !tamanho) {
     return res.status(400).json({
       erro: "Dados do carrinho inválidos"
     });
@@ -441,9 +441,11 @@ app.post("/carrinho", async (req, res) => {
       `
       SELECT id_carrinho, quantidade 
       FROM carrinho 
-      WHERE id_usuario = ? AND id_produto = ?
+      WHERE id_usuario = ? 
+      AND id_produto = ?
+      AND tamanho = ?
       `,
-      [usuarioId, produtoId]
+      [usuarioId, produtoId, tamanho]
     );
 
     if (existing.length > 0) {
@@ -464,13 +466,14 @@ app.post("/carrinho", async (req, res) => {
       await pool.query(
         `
         INSERT INTO carrinho 
-        (id_usuario, id_produto, quantidade)
-        VALUES (?, ?, ?)
+        (id_usuario, id_produto, quantidade, tamanho)
+        VALUES (?, ?, ?, ?)
         `,
         [
           usuarioId,
           produtoId,
-          quantidade
+          quantidade,
+          tamanho
         ]
       );
     }
